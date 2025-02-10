@@ -90,10 +90,11 @@ class CustomerController extends Controller
         $rules = [
             'full_name' => 'required|string',
             'phone' => 'required|numeric|digits:10|unique:users,phone',
-            'email' => 'required|email|unique:users,email',
+            'whatsapp_number' => 'required|numeric|digits:10|unique:users,whatsapp_number',
             'address' => 'required',
-            'password' => 'required|string|min:8',
-            'role' => 'required|string',
+            'pincode' => 'required',
+            'city' => 'required',
+            'state' => 'required',
         ];        
         
         // Validate the request data
@@ -109,15 +110,17 @@ class CustomerController extends Controller
 
         $user = Auth::user();
 
-        $compId = $user->firm_id;
+        $compId = $user->id;
         // Save the User data
         $dataUser = [
             'full_name' => $request->full_name,
             'phone' => $request->phone,
-            'email' => $request->email,
+            'whatsapp_number' => $request->whatsapp_number,
             'address' => $request->address,
-            'role' => $request->role,
-            "password" => Hash::make($request->password),
+            'zipcode' => $request->pincode,
+            'city' => $request->city,
+            'state' => $request->state,
+            'role' => 'customer',
         ];
         User::create($dataUser);
         return response()->json([
@@ -145,13 +148,16 @@ class CustomerController extends Controller
                 'digits:10',
                 Rule::unique('users', 'phone')->ignore($request->id), // Ensure account number is unique, ignoring the current record
             ],
-            'email'  => [
-                'nullable',
-                Rule::unique('users', 'email')->ignore($request->id), // Ensure account number is unique, ignoring the current record
+            'whatsapp_number'  => [
+                'required',
+                'numeric',
+                'digits:10',
+                Rule::unique('users', 'whatsapp_number')->ignore($request->id), // Ensure account number is unique, ignoring the current record
             ],
             'address' => 'required',
-            'password' => 'nullable|string|min:8',
-            'role' => 'required',
+            'zipcode' => 'required',
+            'city' => 'required',
+            'state' => 'required',
         ];
 
         // Validate the request data
@@ -169,10 +175,11 @@ class CustomerController extends Controller
             $dataUser = [
                 'full_name' => $request->full_name,
                 'phone' => $request->phone,
-                'email' => $request->email,
+                'whatsapp_number' => $request->whatsapp_number,
                 'address' => $request->address,
-                'role' => $request->role,
-                "password" => Hash::make($request->password),
+                'zipcode' => $request->zipcode,
+                'city' => $request->city,
+                'state' => $request->state,
             ];
             $user->update($dataUser);
             return response()->json(['success' => true , 'message' => 'Branch Update Successfully']);

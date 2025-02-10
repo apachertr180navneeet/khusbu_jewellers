@@ -45,7 +45,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12 mb-3">
-                        <label for="full_name" class="form-label">Name</label>
+                        <label for="full_name" class="form-label">Customer Name</label>
                         <input type="text" id="full_name" class="form-control" placeholder="Enter Name" />
                         <small class="error-text text-danger"></small>
                     </div>
@@ -55,13 +55,8 @@
                         <small class="error-text text-danger"></small>
                     </div>
                     <div class="col-md-12 mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="text" id="email" class="form-control" placeholder="Enter Email" />
-                        <small class="error-text text-danger"></small>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="text" id="password" class="form-control" placeholder="Enter Password" />
+                        <label for="whatsapp_number" class="form-label">WhatsApp No.</label>
+                        <input type="text" id="whatsapp_number" class="form-control" placeholder="Enter WhatsApp No." />
                         <small class="error-text text-danger"></small>
                     </div>
                     <div class="col-md-12 mb-3">
@@ -69,21 +64,19 @@
                         <input type="text" id="address" class="form-control" placeholder="Enter Address" />
                         <small class="error-text text-danger"></small>
                     </div>
-                    <div class="col-md-12 mb-3">
-                        <label for="role" class="form-label">Department Type</label>
-                        <select id="role" class="form-select">
-                            <option value="">Select Department Type</option>
-                            <option value="executive">Sale Executive</option>
-                            <option value="manager">Sale Manager</option>
-                            <option value="product founder">Product Founder</option>
-                            <option value="payment check">Payment Check</option>
-                            <option value="logistic">Logistic</option>
-                            <option value="billing">Billing</option>
-                            <option value="packing">Packing</option>
-                            <option value="calling">Calling</option>
-                            <option value="purchase">Purchase</option>
-                            <option value="manufacturing">Manufacturing</option>
-                        </select>
+                    <div class="col-md-4 mb-3">
+                        <label for="pincode" class="form-label">Pincode</label>
+                        <input type="text" id="pincode" class="form-control" placeholder="Enter Pincode" />
+                        <small class="error-text text-danger"></small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" id="city" class="form-control" placeholder="Enter City" />
+                        <small class="error-text text-danger"></small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="state" class="form-label">State</label>
+                        <input type="text" id="state" class="form-control" placeholder="Enter State" />
                         <small class="error-text text-danger"></small>
                     </div>
                 </div>
@@ -118,13 +111,8 @@
                         <small class="error-text text-danger"></small>
                     </div>
                     <div class="col-md-12 mb-3">
-                        <label for="edit_email" class="form-label">Email</label>
-                        <input type="text" id="edit_email" class="form-control" placeholder="Enter Email" />
-                        <small class="error-text text-danger"></small>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <label for="edit_password" class="form-label">Password</label>
-                        <input type="text" id="edit_password" class="form-control" placeholder="Enter Password" />
+                        <label for="edit_whatsapp_number" class="form-label">WhatsApp No.</label>
+                        <input type="text" id="edit_whatsapp_number" class="form-control" placeholder="Enter WhatsApp No." />
                         <small class="error-text text-danger"></small>
                     </div>
                     <div class="col-md-12 mb-3">
@@ -132,21 +120,19 @@
                         <input type="text" id="edit_address" class="form-control" placeholder="Enter Address" />
                         <small class="error-text text-danger"></small>
                     </div>
-                    <div class="col-md-12 mb-3">
-                        <label for="edit_role" class="form-label">Department Type</label>
-                        <select id="edit_role" class="form-select">
-                            <option value="">Select Department Type</option>
-                            <option value="executive">Sale Executive</option>
-                            <option value="manager">Sale Manager</option>
-                            <option value="product founder">Product Founder</option>
-                            <option value="payment check">Payment Check</option>
-                            <option value="logistic">Logistic</option>
-                            <option value="billing">Billing</option>
-                            <option value="packing">Packing</option>
-                            <option value="calling">Calling</option>
-                            <option value="purchase">Purchase</option>
-                            <option value="manufacturing">Manufacturing</option>
-                        </select>
+                    <div class="col-md-4 mb-3">
+                        <label for="edit_pincode" class="form-label">Pincode</label>
+                        <input type="text" id="edit_pincode" class="form-control" placeholder="Enter Pincode" />
+                        <small class="error-text text-danger"></small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="edit_city" class="form-label">City</label>
+                        <input type="text" id="edit_city" class="form-control" placeholder="Enter City" />
+                        <small class="error-text text-danger"></small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="edit_state" class="form-label">State</label>
+                        <input type="text" id="edit_state" class="form-control" placeholder="Enter State" />
                         <small class="error-text text-danger"></small>
                     </div>
                 </div>
@@ -209,10 +195,11 @@
             let data = {
                 full_name: $('#full_name').val(),
                 phone: $('#phone').val(),
-                email: $('#email').val(),
+                whatsapp_number: $('#whatsapp_number').val(),
                 address : $('#address').val(),
-                password : $('#password').val(),
-                role : $('#role').val(),
+                pincode : $('#pincode').val(),
+                city : $('#city').val(),
+                state : $('#state').val(),
                 _token: $('meta[name="csrf-token"]').attr('content') // CSRF token
             };
 
@@ -261,9 +248,11 @@
                     $('#compid').val(data.id);
                     $('#edit_full_name').val(data.full_name);
                     $('#edit_phone').val(data.phone);
-                    $('#edit_email').val(data.email);
+                    $('#edit_whatsapp_number').val(data.whatsapp_number);
                     $('#edit_address').val(data.address);
-                    $('#edit_role').val(data.role);
+                    $('#edit_pincode').val(data.zipcode);
+                    $('#edit_city').val(data.city);
+                    $('#edit_state').val(data.state);
 
                     // Open the modal
                     $('#editModal').modal('show');
@@ -286,10 +275,11 @@
                     full_name: $('#edit_full_name').val(),
                     email: $('#edit_email').val(),
                     phone: $('#edit_phone').val(),
-                    password : $('#edit_password').val(),
-                    dob: $('#edit_dob').val(),
+                    whatsapp_number : $('#edit_whatsapp_number').val(),
+                    zipcode: $('#edit_pincode').val(),
                     address: $('#edit_address').val(),
-                    role: $('#edit_role').val(),
+                    city: $('#edit_city').val(),
+                    state: $('#edit_state').val(),
                     id: userId // Ensure userId is in scope or adjust accordingly
                 },
                 success: function(response) {
