@@ -36,11 +36,11 @@ class CustomerController extends Controller
      */
     public function getall(Request $request)
     {
+        $user = Auth::user();
 
-        $users = User::where('users.role', 'customer')
-        ->leftJoin('users as executives', 'users.sale_executive', '=', 'executives.id')
-        ->select('users.*', 'executives.full_name as sales_executive_name')
-        ->get();
+        $compId = $user->id;
+
+        $users = User::where('sale_executive', $compId)->where('role', 'customer')->get();
 
         return response()->json(['data' => $users]);
     }
@@ -98,7 +98,6 @@ class CustomerController extends Controller
             'pincode' => 'required',
             'city' => 'required',
             'state' => 'required',
-            'sale_executive' => 'required',
         ];        
         
         // Validate the request data
@@ -125,7 +124,7 @@ class CustomerController extends Controller
             'city' => $request->city,
             'state' => $request->state,
             'role' => 'customer',
-            'sale_executive' => $request->sale_executive,
+            'sale_executive' => $compId,
         ];
         User::create($dataUser);
         return response()->json([
@@ -163,7 +162,6 @@ class CustomerController extends Controller
             'zipcode' => 'required',
             'city' => 'required',
             'state' => 'required',
-            'sale_executive' => 'required',
         ];
 
         // Validate the request data
@@ -175,7 +173,9 @@ class CustomerController extends Controller
                 'errors' => $validator->errors(),
             ]);
         }
+        $authuser = Auth::user();
 
+        $compId = $authuser->id;
         $user = User::find($request->id);
         if ($user) {
             $dataUser = [
@@ -186,7 +186,7 @@ class CustomerController extends Controller
                 'zipcode' => $request->zipcode,
                 'city' => $request->city,
                 'state' => $request->state,
-                'sale_executive' => $request->sale_executive,
+                'sale_executive' => $compId,
             ];
             $user->update($dataUser);
             return response()->json(['success' => true , 'message' => 'Branch Update Successfully']);

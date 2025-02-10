@@ -22,7 +22,6 @@
                                 <tr>
                                     <th>Customer Name</th>
                                     <th>Number</th>
-                                    <th>Sale Executive</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -78,16 +77,6 @@
                     <div class="col-md-4 mb-3">
                         <label for="state" class="form-label">State</label>
                         <input type="text" id="state" class="form-control" placeholder="Enter State" />
-                        <small class="error-text text-danger"></small>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <label for="sale_executive" class="form-label">Sale Executive</label>
-                        <select id="sale_executive" class="form-select">
-                            <option value="">Select Sale Executive</option>
-                            @foreach ( $users as $user)
-                                <option value="{{ $user->id }}">{{ $user->full_name }}</option>
-                            @endforeach
-                        </select>
                         <small class="error-text text-danger"></small>
                     </div>
                 </div>
@@ -146,16 +135,6 @@
                         <input type="text" id="edit_state" class="form-control" placeholder="Enter State" />
                         <small class="error-text text-danger"></small>
                     </div>
-                    <div class="col-md-12 mb-3">
-                        <label for="edit_sale_executive" class="form-label">Sale Executive</label>
-                        <select id="edit_sale_executive" class="form-select">
-                            <option value="">Select Sale Executive</option>
-                            @foreach ( $users as $user)
-                                <option value="{{ $user->id }}">{{ $user->full_name }}</option>
-                            @endforeach
-                        </select>
-                        <small class="error-text text-danger"></small>
-                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -181,9 +160,6 @@
                 },
                 {
                     data: "phone",
-                },
-                {
-                    data: "sales_executive_name",
                 },
                 {
                     data: "status",
@@ -224,7 +200,6 @@
                 pincode : $('#pincode').val(),
                 city : $('#city').val(),
                 state : $('#state').val(),
-                sale_executive : $('#sale_executive').val(),
                 _token: $('meta[name="csrf-token"]').attr('content') // CSRF token
             };
 
@@ -278,7 +253,6 @@
                     $('#edit_pincode').val(data.zipcode);
                     $('#edit_city').val(data.city);
                     $('#edit_state').val(data.state);
-                    $('#edit_sale_executive').val(data.sale_executive);
 
                     // Open the modal
                     $('#editModal').modal('show');
@@ -306,7 +280,6 @@
                     address: $('#edit_address').val(),
                     city: $('#edit_city').val(),
                     state: $('#edit_state').val(),
-                    sale_executive: $('#edit_sale_executive').val(),
                     id: userId // Ensure userId is in scope or adjust accordingly
                 },
                 success: function(response) {
