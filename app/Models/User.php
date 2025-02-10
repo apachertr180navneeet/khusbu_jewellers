@@ -34,7 +34,8 @@ class User extends Authenticatable implements JWTSubject
         'alternative_phone',
         'password',
         'role',
-        'status'
+        'status',
+        'whatsapp_number'
     ];
 
     protected $appends = ['avatar_full_path'];
