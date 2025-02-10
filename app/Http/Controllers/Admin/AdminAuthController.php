@@ -269,7 +269,29 @@ class AdminAuthController extends Controller
 
     public function adminDashboard()
     {
-        return view("admin.dashboard.index");
+        $roles = ['executive', 'manager', 'product founder', 'payment check', 'logistic', 'billing', 'packing', 'calling', 'purchase', 'manufacturing'];
+
+        // Fetch counts from database
+        $usersData = User::where('role', '!=', 'super admin')
+            ->whereIn('role', $roles)
+            ->selectRaw("role, 
+                        SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_count,
+                        SUM(CASE WHEN status = 'inactive' THEN 1 ELSE 0 END) as inactive_count")
+            ->groupBy('role')
+            ->get()
+            ->keyBy('role') // Convert collection to an associative array with 'role' as key
+            ->toArray();
+
+        // Ensure all roles are included, even if they have 0 users
+        $usersCount = [];
+        foreach ($roles as $role) {
+            $roleKey = str_replace(' ', '_', $role); // Replace spaces with underscores
+
+            $usersCount[$roleKey . '_active_count'] = $usersData[$role]['active_count'] ?? 0;
+            $usersCount[$roleKey . '_inactive_count'] = $usersData[$role]['inactive_count'] ?? 0;
+        }
+
+        return view("admin.dashboard.index", compact('usersCount'));
     }
 
 

@@ -620,15 +620,15 @@
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <p>Total</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['executive_active_count'] + $usersCount['executive_inactive_count']  }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['executive_active_count'] }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>In-Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['executive_inactive_count'] }} </h5>
                         </div>
                     </div>
                 </div>
@@ -641,15 +641,15 @@
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <p>Total</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['manager_active_count'] + $usersCount['manager_inactive_count']  }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['manager_active_count'] }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>In-Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['manager_inactive_count'] }} </h5>
                         </div>
                     </div>
                 </div>
@@ -662,15 +662,15 @@
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <p>Total</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['product_founder_active_count'] + $usersCount['product_founder_inactive_count']  }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['product_founder_active_count'] }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>In-Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['product_founder_inactive_count'] }} </h5>
                         </div>
                     </div>
                 </div>
@@ -683,15 +683,15 @@
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <p>Total</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['payment_check_active_count'] + $usersCount['payment_check_inactive_count']  }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['payment_check_active_count'] }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>In-Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['payment_check_inactive_count'] }} </h5>
                         </div>
                     </div>
                 </div>
@@ -704,15 +704,15 @@
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <p>Total</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['logistic_active_count'] + $usersCount['logistic_inactive_count']  }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['logistic_active_count'] }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>In-Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['logistic_inactive_count'] }} </h5>
                         </div>
                     </div>
                 </div>
@@ -725,15 +725,15 @@
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <p>Total</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['billing_active_count'] + $usersCount['billing_inactive_count']  }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['billing_active_count'] }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>In-Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['billing_inactive_count'] }} </h5>
                         </div>
                     </div>
                 </div>
@@ -746,15 +746,15 @@
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <p>Total</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['packing_active_count'] + $usersCount['packing_inactive_count']  }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['packing_active_count'] }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>In-Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['packing_inactive_count'] }} </h5>
                         </div>
                     </div>
                 </div>
@@ -767,15 +767,15 @@
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <p>Total</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['calling_active_count'] + $usersCount['calling_inactive_count']  }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['calling_active_count'] }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>In-Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['calling_inactive_count'] }} </h5>
                         </div>
                     </div>
                 </div>
@@ -788,15 +788,15 @@
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <p>Total</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['purchase_active_count'] + $usersCount['purchase_inactive_count']  }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['purchase_active_count'] }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>In-Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['purchase_inactive_count'] }} </h5>
                         </div>
                     </div>
                 </div>
@@ -809,15 +809,15 @@
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <p>Total</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['manufacturing_active_count'] + $usersCount['manufacturing_inactive_count']  }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['manufacturing_active_count'] }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>In-Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['manufacturing_inactive_count'] }} </h5>
                         </div>
                     </div>
                 </div>
