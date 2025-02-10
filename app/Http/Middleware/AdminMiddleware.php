@@ -18,7 +18,7 @@ class AdminMiddleware
     {
         if(Auth::user()) {
             $user = Auth::user();
-            if($user->role == "admin") {
+            if($user->role == "super admin") {
                 return $next($request);
             }else{
                 return redirect()->back();
