@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
-            $table->enum('role',['admin','user'])->default('user');
+            $table->enum('role',['super admin','executive','manager','product founder', 'payment check','logistic','billing','packing','calling','purchase','manufacturing'])->default('sales executive');
             $table->string('address')->default('');
             $table->string('area')->default('');
             $table->string('city')->default('');
