@@ -21,11 +21,11 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $users = User::where('role', 'executive')->get();
         //dd($user);
 
         // Pass the company and comId to the view
-        return view('manager.customer.index', compact('user'));
+        return view('manager.customer.index', compact('users'));
     }
 
     /**
@@ -37,7 +37,10 @@ class CustomerController extends Controller
     public function getall(Request $request)
     {
 
-        $users = User::where('role', 'customer')->get();
+        $users = User::where('users.role', 'customer')
+        ->leftJoin('users as executives', 'users.sale_executive', '=', 'executives.id')
+        ->select('users.*', 'executives.full_name as sales_executive_name')
+        ->get();
 
         return response()->json(['data' => $users]);
     }
@@ -95,6 +98,7 @@ class CustomerController extends Controller
             'pincode' => 'required',
             'city' => 'required',
             'state' => 'required',
+            'sale_executive' => 'required',
         ];        
         
         // Validate the request data
@@ -121,11 +125,12 @@ class CustomerController extends Controller
             'city' => $request->city,
             'state' => $request->state,
             'role' => 'customer',
+            'sale_executive' => $request->sale_executive,
         ];
         User::create($dataUser);
         return response()->json([
             'success' => true,
-            'message' => 'Department Users saved successfully!',
+            'message' => 'Customer saved successfully!',
         ]);
     }
 
@@ -158,6 +163,7 @@ class CustomerController extends Controller
             'zipcode' => 'required',
             'city' => 'required',
             'state' => 'required',
+            'sale_executive' => 'required',
         ];
 
         // Validate the request data
@@ -180,6 +186,7 @@ class CustomerController extends Controller
                 'zipcode' => $request->zipcode,
                 'city' => $request->city,
                 'state' => $request->state,
+                'sale_executive' => $request->sale_executive,
             ];
             $user->update($dataUser);
             return response()->json(['success' => true , 'message' => 'Branch Update Successfully']);
