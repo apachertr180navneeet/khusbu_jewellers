@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="{{ config('app.name') }}">
+<html lang="en" ng-app="Khusbu Jewellers">
     <head>
         <meta charset="utf-8" />
-        <title>{{ config('app.name') }}</title>
+        <title>Khusbu Jewellers</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="" />
         <meta name="csrf-token" content="{{ csrf_token() }}" />
