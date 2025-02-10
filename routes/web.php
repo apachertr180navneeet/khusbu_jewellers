@@ -7,6 +7,10 @@ use App\Http\Controllers\Admin\{
     UserController
 };
 
+use App\Http\Controllers\Manager\{
+    ManagerAuthController
+};
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,6 +26,7 @@ use App\Http\Controllers\Admin\{
 Route::get('/', [HomeController::class, 'index'])->name('/');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+// Super Admin routes
 Route::prefix('admin')->name('admin.')->group(function () {
     
     // Guest Routes
@@ -58,6 +63,32 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('update', [$controller, 'update'])->name('update');
         });
     }
+
+});
+
+// Sale Manger Action
+Route::prefix('manager')->name('manager.')->group(function () {
+    
+    // Guest Routes
+    Route::controller(ManagerAuthController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('login', 'login')->name('login');
+        Route::post('login', 'postLogin')->name('login.post');
+        Route::get('forget-password', 'showForgetPasswordForm')->name('forget.password.get');
+        Route::post('forget-password', 'submitForgetPasswordForm')->name('forget.password.post');
+        Route::get('reset-password/{token}', 'showResetPasswordForm')->name('reset.password.get');
+        Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
+    });
+
+    // Authenticated Manager Routes
+    Route::middleware('manager')->controller(ManagerAuthController::class)->group(function () {
+        Route::get('dashboard', 'adminDashboard')->name('dashboard');
+        Route::get('change-password', 'changePassword')->name('change.password');
+        Route::post('update-password', 'updatePassword')->name('update.password');
+        Route::get('logout', 'logout')->name('logout');
+        Route::get('profile', 'adminProfile')->name('profile');
+        Route::post('profile', 'updateAdminProfile')->name('update.profile');
+    });
 
 });
 
