@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use App\Models\{
+    User,
+    LogisticCompany
+};
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Mail, DB, Hash, Validator, Session, File,Exception;
@@ -290,6 +293,11 @@ class AdminAuthController extends Controller
             $usersCount[$roleKey . '_active_count'] = $usersData[$role]['active_count'] ?? 0;
             $usersCount[$roleKey . '_inactive_count'] = $usersData[$role]['inactive_count'] ?? 0;
         }
+
+        // Fetch LogisticCompany counts
+        $usersCount['logistic_company_total_count'] = LogisticCompany::count();
+        $usersCount['logistic_company_active_count'] = LogisticCompany::where('status', 'active')->count();
+        $usersCount['logistic_company_inactive_count'] = LogisticCompany::where('status', 'inactive')->count();
 
         return view("admin.dashboard.index", compact('usersCount'));
     }

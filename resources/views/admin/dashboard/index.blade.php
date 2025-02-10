@@ -833,15 +833,15 @@
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <p>Total</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['logistic_company_total_count'] }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['logistic_company_active_count'] }} </h5>
                         </div>
                         <div class="col-md-4 text-center">
                             <p>In-Active</p>
-                            <h5> 0 </h5>
+                            <h5> {{ $usersCount['logistic_company_inactive_count'] }} </h5>
                         </div>
                     </div>
                 </div>

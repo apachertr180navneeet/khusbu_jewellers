@@ -46,7 +46,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     // Admin Master Route
-    foreach (['user'] as $resource) {
+    foreach (['user','logistic'] as $resource) {
         Route::prefix($resource)->name("$resource.")->group(function () use ($resource) {
             $controller = "App\Http\Controllers\Admin\\" . ucfirst($resource) . "Controller";
             Route::get('/', [$controller, 'index'])->name('index');
