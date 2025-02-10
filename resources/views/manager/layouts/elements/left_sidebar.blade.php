@@ -25,5 +25,16 @@
 				<div data-i18n="Dashboard">Dashboard</div>
 			</a>
 		</li>
+
+		@foreach([
+			['route' => 'manager.customer.index', 'text' => 'Customer'],
+		] as $mastermenu)
+			<li class="menu-item {{ request()->routeIs($mastermenu['route']) ? 'active' : '' }}">
+				<a href="{{ route($mastermenu['route']) }}" class="menu-link">
+					<i class="menu-icon tf-icons bx bxs-user"></i>
+					<div data-i18n="{{ $mastermenu['text'] }}">{{ $mastermenu['text'] }}</div>
+				</a>
+			</li>
+		@endforeach
 	</ul>
 </aside>
