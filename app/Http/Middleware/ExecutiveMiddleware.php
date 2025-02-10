@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Auth;
 
-class SaleManagerMiddleware
+class ExecutiveMiddleware
 {
     /**
      * Handle an incoming request.
@@ -18,13 +18,13 @@ class SaleManagerMiddleware
     {
         if(Auth::user()) {
             $user = Auth::user();
-            if($user->role == "manager") {
+            if($user->role == "executive") {
                 return $next($request);
             }else{
                 return redirect()->back();
             }
         }else{
-            return redirect()->route('manager.login');
+            return redirect()->route('executive.login');
         }
     }
 }

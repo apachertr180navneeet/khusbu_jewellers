@@ -7,8 +7,8 @@ use App\Http\Controllers\Admin\{
     UserController
 };
 
-use App\Http\Controllers\Manager\{
-    ManagerAuthController,
+use App\Http\Controllers\Executive\{
+    ExecutiveAuthController,
     CustomerController
 };
 
@@ -68,10 +68,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 // Sale Manger Action
-Route::prefix('manager')->name('manager.')->group(function () {
+Route::prefix('executive')->name('executive.')->group(function () {
     
     // Guest Routes
-    Route::controller(ManagerAuthController::class)->group(function () {
+    Route::controller(ExecutiveAuthController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('login', 'login')->name('login');
         Route::post('login', 'postLogin')->name('login.post');
@@ -82,7 +82,7 @@ Route::prefix('manager')->name('manager.')->group(function () {
     });
 
     // Authenticated Manager Routes
-    Route::middleware('manager')->controller(ManagerAuthController::class)->group(function () {
+    Route::middleware('executive')->controller(ExecutiveAuthController::class)->group(function () {
         Route::get('dashboard', 'adminDashboard')->name('dashboard');
         Route::get('change-password', 'changePassword')->name('change.password');
         Route::post('update-password', 'updatePassword')->name('update.password');
@@ -94,7 +94,7 @@ Route::prefix('manager')->name('manager.')->group(function () {
     // Admin Master Route
     foreach (['customer'] as $resource) {
         Route::prefix($resource)->name("$resource.")->group(function () use ($resource) {
-            $controller = "App\Http\Controllers\Manager\\" . ucfirst($resource) . "Controller";
+            $controller = "App\Http\Controllers\Executive\\" . ucfirst($resource) . "Controller";
             Route::get('/', [$controller, 'index'])->name('index');
             Route::get('all', [$controller, 'getall'])->name('getall');
             Route::post('store', [$controller, 'store'])->name('store');

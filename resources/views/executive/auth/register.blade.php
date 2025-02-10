@@ -1,4 +1,4 @@
-@extends('manager.layouts.login_layout') 
+@extends('executive.layouts.login_layout') 
 
 @section('content') 
 
@@ -41,7 +41,7 @@
                     </div>
                     <div class="form-content ">
                         <div class="contact-form-action">
-                           <form method="POST" action="{{ route('manager.register') }}">
+                           <form method="POST" action="{{ route('executive.register') }}">
                               @csrf
                               <div class="input-box">
                                  <label class="label-text">Store Name</label>

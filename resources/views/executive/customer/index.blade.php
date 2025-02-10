@@ -1,4 +1,4 @@
-@extends('manager.layouts.app') @section('style') @endsection @section('content')
+@extends('executive.layouts.app') @section('style') @endsection @section('content')
 <div class="container-fluid flex-grow-1 container-p-y">
     <div class="row">
         <div class="col-md-6 text-start">
@@ -173,7 +173,7 @@
         const table = $("#branchTable").DataTable({
             processing: true,
             ajax: {
-                url: "{{ route('manager.customer.getall') }}",
+                url: "{{ route('executive.customer.getall') }}",
             },
             columns: [
                 {
@@ -233,7 +233,7 @@
             $('.error-text').text('');
 
             $.ajax({
-                url: '{{ route('manager.customer.store') }}', // Adjust the route as necessary
+                url: '{{ route('executive.customer.store') }}', // Adjust the route as necessary
                 type: 'POST',
                 data: data,
                 success: function(response) {
@@ -264,7 +264,7 @@
 
         // Define editUser function
         function editUser(userId) {
-            const url = '{{ route("manager.customer.get", ":userid") }}'.replace(":userid", userId);
+            const url = '{{ route("executive.customer.get", ":userid") }}'.replace(":userid", userId);
             $.ajax({
                 url: url, // Update this URL to match your route
                 method: 'GET',
@@ -294,7 +294,7 @@
         $('#EditComapany').on('click', function() {
             const userId = $('#compid').val(); // Ensure userId is available in the scope
             $.ajax({
-                url: '{{ route('manager.customer.update') }}', // Update this URL to match your route
+                url: '{{ route('executive.customer.update') }}', // Update this URL to match your route
                 method: 'POST',
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content'),
@@ -349,7 +349,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "POST",
-                        url: "{{ route('manager.customer.status') }}",
+                        url: "{{ route('executive.customer.status') }}",
                         data: { userId, status, _token: $('meta[name="csrf-token"]').attr('content') },
                         success: function (response) {
                             console.log(response);
@@ -383,7 +383,7 @@
                 confirmButtonText: "Yes",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const url = '{{ route("manager.customer.destroy", ":userId") }}'.replace(":userId", userId);
+                    const url = '{{ route("executive.customer.destroy", ":userId") }}'.replace(":userId", userId);
                     $.ajax({
                         type: "DELETE",
                         url,

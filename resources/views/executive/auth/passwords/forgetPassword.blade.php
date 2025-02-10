@@ -1,4 +1,4 @@
-@extends('manager.layouts.app')
+@extends('executive.layouts.app')
 
 
 @section('content')
@@ -17,7 +17,7 @@
                         </div>
                     @endif
   
-                      <form action="{{ route('manager.forget.password.post') }}" method="POST">
+                      <form action="{{ route('executive.forget.password.post') }}" method="POST">
                           @csrf
                           <div class="form-group row">
                               <label for="email_address" class="col-md-4 col-form-label text-md-right">E-Mail Address</label>

@@ -3,7 +3,7 @@
 @endphp
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 	<div class="app-brand demo">
-		<a href="{{route('manager.dashboard')}}" class="app-brand-link">
+		<a href="{{route('executive.dashboard')}}" class="app-brand-link">
 			<span class="app-brand-logo demo">
 				{{--  Add Logo  --}}
 			</span>
@@ -19,15 +19,15 @@
 	<div class="menu-inner-shadow"></div>
 
 	<ul class="menu-inner py-1">
-		<li class="menu-item {{ request()->is('admin/dashboard') ? 'active' : ''}}">
-			<a href="{{route('manager.dashboard')}}" class="menu-link">
+		<li class="menu-item {{ request()->is('executive/dashboard') ? 'active' : ''}}">
+			<a href="{{route('executive.dashboard')}}" class="menu-link">
 				<i class="menu-icon tf-icons bx bx-home-circle"></i>
 				<div data-i18n="Dashboard">Dashboard</div>
 			</a>
 		</li>
 
 		@foreach([
-			['route' => 'manager.customer.index', 'text' => 'Customer'],
+			['route' => 'executive.customer.index', 'text' => 'Customer'],
 		] as $mastermenu)
 			<li class="menu-item {{ request()->routeIs($mastermenu['route']) ? 'active' : '' }}">
 				<a href="{{ route($mastermenu['route']) }}" class="menu-link">

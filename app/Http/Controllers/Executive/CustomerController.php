@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Manager;
+namespace App\Http\Controllers\Executive;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -25,7 +25,7 @@ class CustomerController extends Controller
         //dd($user);
 
         // Pass the company and comId to the view
-        return view('manager.customer.index', compact('users'));
+        return view('executive.customer.index', compact('users'));
     }
 
     /**

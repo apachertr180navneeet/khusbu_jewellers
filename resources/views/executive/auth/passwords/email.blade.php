@@ -1,4 +1,4 @@
-@extends('manager.layouts.login_layout')
+@extends('executive.layouts.login_layout')
 
 @section('content')
 <div class="container">
@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('manager.password.email') }}">
+                    <form method="POST" action="{{ route('executive.password.email') }}">
                         @csrf
 
                         <div class="form-group row">

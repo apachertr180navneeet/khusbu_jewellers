@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Manager;
+namespace App\Http\Controllers\Executive;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,7 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Mail, DB, Hash, Validator, Session, File,Exception;
 
-class ManagerAuthController extends Controller
+class ExecutiveAuthController extends Controller
 {
     
     public function index()
@@ -20,13 +20,13 @@ class ManagerAuthController extends Controller
         try{
             if(Auth::user()) {
                 $user = Auth::user();
-                if($user->role == "manager") {
-                    return redirect()->route('manager.dashboard');
+                if($user->role == "executive") {
+                    return redirect()->route('executive.dashboard');
                 }else{
                     return back()->with("error","Opps! You do not have access this");
                 }
             }else{
-                return redirect()->route('manager.login');
+                return redirect()->route('executive.login');
             }
 
         }
@@ -39,12 +39,12 @@ class ManagerAuthController extends Controller
 
     public function login()
     {
-        return view("manager.auth.login");
+        return view("executive.auth.login");
     }
 
     public function registration()
     {
-        return view("manager.auth.registration");
+        return view("executive.auth.registration");
     }
 
     public function postLogin(Request $request)
@@ -54,18 +54,18 @@ class ManagerAuthController extends Controller
                 "email" => "required",
                 "password" => "required",
             ]);
-            $user = User::where('role','manager')->where('email',$request->email)->first();
+            $user = User::where('role','executive')->where('email',$request->email)->first();
             if($user){
                 $credentials = $request->only("email", "password");
                 if(Auth::attempt([
                         'email' => $request->email,
                         'password' => $request->password,
                         'role' => function ($query) {
-                            $query->where('role','manager');
+                            $query->where('role','executive');
                         }
                     ]))
                 {
-                    return redirect()->route("manager.dashboard")->with("success", "Welcome to your dashboard.");
+                    return redirect()->route("executive.dashboard")->with("success", "Welcome to your dashboard.");
                 }
                 return back()->with("error","Invalid credentials");
             }else{
@@ -89,7 +89,7 @@ class ManagerAuthController extends Controller
         $data = $request->all();
         $check = $this->create($data);
 
-        return redirect("manager.dashboard")->with("success","Great! You have Successfully loggedin");
+        return redirect("executive.dashboard")->with("success","Great! You have Successfully loggedin");
     }
 
     public function create(array $data)
@@ -103,7 +103,7 @@ class ManagerAuthController extends Controller
 
     public function showForgetPasswordForm()
     {
-        return view("manager.auth.forgot-password");
+        return view("executive.auth.forgot-password");
     }
 
     public function submitForgetPasswordForm(Request $request)
@@ -122,13 +122,13 @@ class ManagerAuthController extends Controller
             ]);
 
             $new_link_token = url("admin/reset-password/" . $token);
-            Mail::send("manager.email.forgot-password",["token" => $new_link_token, "email" => $request->email],
+            Mail::send("executive.email.forgot-password",["token" => $new_link_token, "email" => $request->email],
                 function ($message) use ($request) {
                     $message->to($request->email);
                     $message->subject("Reset Password");
                 }
             );
-            return redirect()->route("manager.login")->with("success","We have e-mailed your password reset link!");
+            return redirect()->route("executive.login")->with("success","We have e-mailed your password reset link!");
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -141,7 +141,7 @@ class ManagerAuthController extends Controller
         try{    
             $user = DB::table("password_resets")->where("token", $token)->first();
             $email = $user->email;
-            return view("manager.auth.reset-password", ["token" => $token,"email" => $email,]);
+            return view("executive.auth.reset-password", ["token" => $token,"email" => $email,]);
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -167,7 +167,7 @@ class ManagerAuthController extends Controller
 
             DB::table("password_resets")->where(["email" => $request->email])->delete();
 
-            return redirect()->route("manager.login")->with("success","Your password has been changed successfully!");
+            return redirect()->route("executive.login")->with("success","Your password has been changed successfully!");
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -176,7 +176,7 @@ class ManagerAuthController extends Controller
 
     public function changePassword()
     {
-        return view("manager.auth.change-password");
+        return view("executive.auth.change-password");
     }
 
     public function updatePassword(Request $request)
@@ -208,7 +208,7 @@ class ManagerAuthController extends Controller
         try{
             Session::flush();
             Auth::logout();
-            return redirect()->route("manager.login")->withSuccess('Logout Successful!');
+            return redirect()->route("executive.login")->withSuccess('Logout Successful!');
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -219,7 +219,7 @@ class ManagerAuthController extends Controller
     {
         try{
             $user = Auth::user();
-            return view("manager.auth.profile", compact("user"));
+            return view("executive.auth.profile", compact("user"));
 
         }
         catch(Exception $e){
@@ -272,7 +272,7 @@ class ManagerAuthController extends Controller
     public function adminDashboard()
     {
         
-        return view("manager.dashboard.index");
+        return view("executive.dashboard.index");
     }
 
 

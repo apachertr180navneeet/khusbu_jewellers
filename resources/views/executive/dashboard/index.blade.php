@@ -1,4 +1,4 @@
-@extends('manager.layouts.app')
+@extends('executive.layouts.app')
 @section('style')
 @endsection  
 

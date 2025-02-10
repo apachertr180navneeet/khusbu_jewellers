@@ -31,7 +31,7 @@
 				</a>
 				<ul class="dropdown-menu dropdown-menu-end">
 					<li>
-						<a class="dropdown-item" href="{{route('manager.profile')}}">
+						<a class="dropdown-item" href="{{route('executive.profile')}}">
 							<div class="d-flex">
 								<div class="flex-shrink-0 me-3">
 									<div class="avatar avatar-online">
@@ -53,13 +53,13 @@
 						<div class="dropdown-divider"></div>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{{route('manager.profile')}}">
+						<a class="dropdown-item" href="{{route('executive.profile')}}">
 							<i class="bx bx-user me-2"></i>
 							<span class="align-middle">My Profile</span>
 						</a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{{route('manager.change.password')}}">
+						<a class="dropdown-item" href="{{route('executive.change.password')}}">
 							<i class="bx bx-key me-2"></i>
 							<span class="align-middle">Change Password</span>
 						</a>
@@ -68,7 +68,7 @@
 						<div class="dropdown-divider"></div>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{{route('manager.logout')}}">
+						<a class="dropdown-item" href="{{route('executive.logout')}}">
 							<i class="bx bx-power-off me-2"></i>
 							<span class="align-middle">Log Out</span>
 						</a>

@@ -32,15 +32,15 @@
     <body>
        <div class="layout-wrapper layout-content-navbar">
             <div class="layout-container">
-                @include('manager.layouts.elements.left_sidebar')
+                @include('executive.layouts.elements.left_sidebar')
                 <div class="layout-page">
-                    @include('manager.layouts.elements.header')
+                    @include('executive.layouts.elements.header')
                     <div class="content-wrapper">
                         @yield('content')
-                        @include('manager.layouts.elements.footer')
+                        @include('executive.layouts.elements.footer')
                         <div class="content-backdrop fade"></div>
                     </div>
-                    @include('manager.layouts.elements.right_sidebar')
+                    @include('executive.layouts.elements.right_sidebar')
                 </div>
         
                 <script src="{{asset('assets/admin/vendor/libs/jquery/jquery.js')}}"></script>
@@ -56,7 +56,7 @@
                 <script src="{{asset('assets/admin/js/moment.min.js')}}"></script>
                 <script async defer src="https://buttons.github.io/buttons.js"></script>
                 @yield('script')
-                @include('manager.layouts.elements.sweet_alerts')
+                @include('executive.layouts.elements.sweet_alerts')
             </div>
             <div class="layout-overlay layout-menu-toggle"></div>
         </div>

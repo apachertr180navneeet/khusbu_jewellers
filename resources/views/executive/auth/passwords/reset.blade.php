@@ -1,4 +1,4 @@
-@extends('manager.layouts.login_layout') 
+@extends('executive.layouts.login_layout') 
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card-header">{{ __('Reset Password') }}</div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('manager.password.request') }}">
+                    <form method="POST" action="{{ route('executive.password.request') }}">
                         @csrf
                         <input type="hidden" name="token" value="{{ $token }}">
                         <div class="form-group row">
