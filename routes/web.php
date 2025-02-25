@@ -9,7 +9,8 @@ use App\Http\Controllers\Admin\{
 
 use App\Http\Controllers\Executive\{
     ExecutiveAuthController,
-    CustomerController
+    CustomerController,
+    OrderController
 };
 
 /*
@@ -51,23 +52,25 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('profile', 'updateAdminProfile')->name('update.profile');
     });
 
-    // Admin Master Route
-    foreach (['user','logistic'] as $resource) {
-        Route::prefix($resource)->name("$resource.")->group(function () use ($resource) {
-            $controller = "App\Http\Controllers\Admin\\" . ucfirst($resource) . "Controller";
-            Route::get('/', [$controller, 'index'])->name('index');
-            Route::get('all', [$controller, 'getall'])->name('getall');
-            Route::post('store', [$controller, 'store'])->name('store');
-            Route::post('status', [$controller, 'status'])->name('status');
-            Route::delete('delete/{id}', [$controller, 'destroy'])->name('destroy');
-            Route::get('get/{id}', [$controller, 'get'])->name('get');
-            Route::post('update', [$controller, 'update'])->name('update');
-        });
-    }
+    Route::middleware('admin')->group(function () {
+        // Admin Master Route
+        foreach (['user','logistic'] as $resource) {
+            Route::prefix($resource)->name("$resource.")->group(function () use ($resource) {
+                $controller = "App\Http\Controllers\Admin\\" . ucfirst($resource) . "Controller";
+                Route::get('/', [$controller, 'index'])->name('index');
+                Route::get('all', [$controller, 'getall'])->name('getall');
+                Route::post('store', [$controller, 'store'])->name('store');
+                Route::post('status', [$controller, 'status'])->name('status');
+                Route::delete('delete/{id}', [$controller, 'destroy'])->name('destroy');
+                Route::get('get/{id}', [$controller, 'get'])->name('get');
+                Route::post('update', [$controller, 'update'])->name('update');
+            });
+        }
+    });
 
 });
 
-// Sale Manger Action
+// Sale Executive Action
 Route::prefix('executive')->name('executive.')->group(function () {
     
     // Guest Routes
@@ -81,7 +84,7 @@ Route::prefix('executive')->name('executive.')->group(function () {
         Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
     });
 
-    // Authenticated Manager Routes
+    // Authenticated Executive Routes
     Route::middleware('executive')->controller(ExecutiveAuthController::class)->group(function () {
         Route::get('dashboard', 'adminDashboard')->name('dashboard');
         Route::get('change-password', 'changePassword')->name('change.password');
@@ -91,20 +94,27 @@ Route::prefix('executive')->name('executive.')->group(function () {
         Route::post('profile', 'updateAdminProfile')->name('update.profile');
     });
 
-    // Admin Master Route
-    foreach (['customer'] as $resource) {
-        Route::prefix($resource)->name("$resource.")->group(function () use ($resource) {
-            $controller = "App\Http\Controllers\Executive\\" . ucfirst($resource) . "Controller";
-            Route::get('/', [$controller, 'index'])->name('index');
-            Route::get('all', [$controller, 'getall'])->name('getall');
-            Route::post('store', [$controller, 'store'])->name('store');
-            Route::post('status', [$controller, 'status'])->name('status');
-            Route::delete('delete/{id}', [$controller, 'destroy'])->name('destroy');
-            Route::get('get/{id}', [$controller, 'get'])->name('get');
-            Route::post('update', [$controller, 'update'])->name('update');
-        });
-    }
+    Route::middleware('executive')->group(function () {
+        // Admin Master Route
+        foreach (['customer'] as $resource) {
+            Route::prefix($resource)->name("$resource.")->group(function () use ($resource) {
+                $controller = "App\Http\Controllers\Executive\\" . ucfirst($resource) . "Controller";
+                Route::get('/', [$controller, 'index'])->name('index');
+                Route::get('all', [$controller, 'getall'])->name('getall');
+                Route::post('store', [$controller, 'store'])->name('store');
+                Route::post('status', [$controller, 'status'])->name('status');
+                Route::delete('delete/{id}', [$controller, 'destroy'])->name('destroy');
+                Route::get('get/{id}', [$controller, 'get'])->name('get');
+                Route::post('update', [$controller, 'update'])->name('update');
+            });
+        }
 
+        Route::prefix('order')->name('order.')->controller(OrderController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/add', 'add')->name('add');
+        });
+    
+    });
 });
 
 Route::middleware(['auth'])->group(function () {
