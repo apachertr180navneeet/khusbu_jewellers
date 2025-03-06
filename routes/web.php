@@ -112,6 +112,7 @@ Route::prefix('executive')->name('executive.')->group(function () {
         Route::prefix('order')->name('order.')->controller(OrderController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/add', 'add')->name('add');
+            Route::post('/store', 'store')->name('store');
         });
     
     });

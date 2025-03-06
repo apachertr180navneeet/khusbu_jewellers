@@ -24,13 +24,31 @@
                                     <th>Order Id</th>
                                     <th>Customer Name</th>
                                     <th>Number</th>
+                                    <th>WhatsApp Number</th>
                                     <th>Amount</th>
                                     <th>Delivery Type</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                                @foreach($OrderList as $order)
+                                    <tr>
+                                        <td>{{ $order->date }}</td>
+                                        <td>{{ $order->id }}</td>
+                                        <td>{{ $order->customer->full_name }}</td>
+                                        <td>{{ $order->customer->phone }}</td>
+                                        <td>{{ $order->customer->whatsapp_number }}</td>
+                                        <td>{{ $order->amount }}</td>
+                                        <td>{{ $order->delivery_type }}</td>
+                                        <td>{{ $order->status }}</td>
+                                        <td>
+                                            {{--  <a href="{{ route('executive.order.edit', $order->id)}}" class="btn btn-sm btn-primary">Edit</a>
+                                            <a href="{{ route('executive.order.delete', $order->id)}}" class="btn btn-sm btn-danger">Delete</a>  --}}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
                 </div>
