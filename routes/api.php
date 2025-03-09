@@ -28,15 +28,15 @@ Route::get('/timezones', [AuthController::class, 'getTimeZones']);
 Route::post('/contact', [ContactController::class, 'submitContact']);
 
 Route::group(['prefix'=>'auth'], function(){
-    Route::post('/send-phone-otp', [AuthController::class, 'sendPhoneOtp']);
-    Route::post('/verify-phone-otp', [AuthController::class, 'verifyPhoneOtp']);
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/verify-register', [AuthController::class, 'verifyRegister']);
+    // Route::post('/register', [AuthController::class, 'register']);
+    // Route::post('/verify-register', [AuthController::class, 'verifyRegister']);
+    // Route::post('/set-forgot-password', [AuthController::class, 'setForgotPassword']);
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/set-forgot-password', [AuthController::class, 'setForgotPassword']);
 });
 
 Route::middleware('jwt.verify')->group(function() {
+    Route::post('/send-phone-otp', [AuthController::class, 'sendPhoneOtp']);
+    Route::post('/verify-phone-otp', [AuthController::class, 'verifyPhoneOtp']);
     Route::get('/user', [AuthController::class, 'getUser']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);

@@ -41,7 +41,6 @@ class AuthController extends Controller
         $data = $request->all();
         $validator = Validator::make($data, [
             'phone' => 'required|digits_between:4,13',
-            'country_code' => "required|max:5",
         ]);
         
         if($validator->fails()) {
@@ -56,18 +55,18 @@ class AuthController extends Controller
         $date = date('Y-m-d H:i:s');
         $currentDate = strtotime($date);
         $futureDate = $currentDate+(60*120);
-        $phone_user = PhoneOtp::where('country_code',$data['country_code'])->where('phone',$data['phone'])->first();
+        $phone_user = PhoneOtp::where('phone',$data['phone'])->first();
         if(!$phone_user){
             $phone_user = new PhoneOtp();
         }
         $phone_user->phone = $data['phone'];
-        $phone_user->country_code = $data['country_code'];
         $phone_user->otp = $code;
         $phone_user->otp_expire_time = $futureDate;
         $phone_user->save();
         return response()->json([
             'status' => true,
             'message' =>  'A one-time password has been sent to your phone, please check.',
+            "phone_otp" => $code,
         ],200);
             
         
@@ -77,7 +76,6 @@ class AuthController extends Controller
         $data = $request->all();
         $validator = Validator::make($data, [
             'phone' => 'required|digits_between:4,13',
-            'country_code' => "required|max:5",
             'otp' => "required|max:4",
         ]);
         if($validator->fails()) {
@@ -87,16 +85,18 @@ class AuthController extends Controller
             ],200);
         }
         
-        $phone_user = PhoneOtp::where('country_code',$data['country_code'])->where('phone',$data['phone'])->first();
+        $phone_user = PhoneOtp::where('phone',$data['phone'])->first();
         if($phone_user){
             $date = date('Y-m-d H:i:s');
             $currentTime = strtotime($date);
             if($phone_user->otp == $data['otp']){
                 if($currentTime < $phone_user->otp_expire_time){
-                    PhoneOtp::where('country_code',$data['country_code'])->where('phone',$data['phone'])->delete();
+                    PhoneOtp::where('phone',$data['phone'])->delete();
+                    $user = JWTAuth::parseToken()->authenticate();
                     return response()->json([
                         'status' => true,
                         'message' =>  'Verified successfully.',
+                        'user' => $this->getUserDetail($user->id),
                     ],200);
                 }else{
                     return response()->json([
@@ -291,8 +291,7 @@ class AuthController extends Controller
     {
         $data = $request->all();
         $validator = Validator::make($data, [
-            'phone' => 'required|numeric',
-            'country_code' => 'required|numeric',
+            'email' => 'required',
             'password' => 'required',
             'device_type'=>'required|in:ios,android',
             'device_token'=>'required',
@@ -307,12 +306,12 @@ class AuthController extends Controller
         
         try
         {
-            $user = User::where('phone',$data['phone'])->where('country_code',$data['country_code'])->where('role','user')->first();
+            $user = User::where('email',$data['email'])->first();
            
             if(!$user){
                 return response()->json([
                     'status' => false,
-                    'message' => 'Phone number not exists',
+                    'message' => 'email not exists',
                 ]);      
             }
 
@@ -323,14 +322,13 @@ class AuthController extends Controller
                 ]);      
             }
             
-            $input['phone'] = $data['phone'];
-            $input['country_code'] = $data['country_code'];
+            $input['email'] = $data['email'];
             $input['password'] = $data['password'];
 
             if(!$token = JWTAuth::attempt($input)) {
                 return response()->json([
                     'status' => false,
-                    'message'=>'Invalid phone or password. Please try again'
+                    'message'=>'Invalid email or password. Please try again'
                 ],200);
             }
 
@@ -338,6 +336,19 @@ class AuthController extends Controller
             $user->device_type = $data['device_type'];
             $user->device_token = $data['device_token'];
             $user->save();
+
+            $code = '1234';
+            $date = date('Y-m-d H:i:s');
+            $currentDate = strtotime($date);
+            $futureDate = $currentDate+(60*120);
+            $phone_user = PhoneOtp::where('phone',$user->phone)->first();
+            if(!$phone_user){
+                $phone_user = new PhoneOtp();
+            }
+            $phone_user->phone = $user->phone;
+            $phone_user->otp = $code;
+            $phone_user->otp_expire_time = $futureDate;
+            $phone_user->save();
             
             return response()->json([
                 'status' => true,
@@ -345,6 +356,8 @@ class AuthController extends Controller
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'user' => $this->getUserDetail(auth()->user()->id),
+                'sales_mangere_phone' => $user->phone,
+                'phone_otp' => $code,
             ],200);
         }
         catch (JWTException $e) {
