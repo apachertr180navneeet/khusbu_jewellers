@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\{
-    User
+    User,
+    Order
 };
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -271,8 +272,39 @@ class ExecutiveAuthController extends Controller
 
     public function adminDashboard()
     {
+        $dashboardCount = [
+            // Total orders for today
+            "today_order" => Order::whereDate("created_at", now()->toDateString())->count(),
         
-        return view("executive.dashboard.index");
+            // Total orders for the current month
+            "month_order" => Order::whereMonth("created_at", now()->month)
+                ->whereYear("created_at", now()->year)
+                ->count(),
+        
+            // Today's Prepaid Orders
+            "today_prepaid_order" => Order::whereDate("created_at", now()->toDateString())
+                ->where("order_payment_type", "prepaid")
+                ->count(),
+        
+            // Today's COD Orders
+            "today_cod_order" => Order::whereDate("created_at", now()->toDateString())
+                ->where("order_payment_type", "cod")
+                ->count(),
+        
+            // This Month's Prepaid Orders
+            "month_prepaid_order" => Order::whereMonth("created_at", now()->month)
+                ->whereYear("created_at", now()->year)
+                ->where("order_payment_type", "prepaid")
+                ->count(),
+        
+            // This Month's COD Orders
+            "month_cod_order" => Order::whereMonth("created_at", now()->month)
+                ->whereYear("created_at", now()->year)
+                ->where("order_payment_type", "cod")
+                ->count(),
+        ];
+                
+        return view("executive.dashboard.index",compact('dashboardCount'));
     }
 
 

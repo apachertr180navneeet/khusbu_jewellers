@@ -15,11 +15,11 @@
                     <div class="row">
                         <div class="col-md-6 text-start">
                             <p>Prepaid Orders</p>
-                            <h5> 0 Order</h5>
+                            <h5> {{ $dashboardCount['today_prepaid_order'] }} Order</h5>
                         </div>
                         <div class="col-md-6 text-end">
                             <p>COD Orders</p>
-                            <h5> 0 Order</h5>
+                            <h5> {{ $dashboardCount['today_cod_order'] }} Order</h5>
                         </div>
                     </div>
                 </div>
@@ -49,11 +49,11 @@
                     <div class="row">
                         <div class="col-md-6 text-start">
                             <p>Prepaid Orders</p>
-                            <h5> 0 Order</h5>
+                            <h5> {{ $dashboardCount['month_prepaid_order'] }} Order</h5>
                         </div>
                         <div class="col-md-6 text-end">
                             <p>COD Orders</p>
-                            <h5> 0 Order</h5>
+                            <h5> {{ $dashboardCount['month_cod_order'] }} Order</h5>
                         </div>
                     </div>
                 </div>
