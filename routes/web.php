@@ -158,6 +158,7 @@ Route::prefix('manager')->name('manager.')->group(function () {
             Route::post('/store', 'store')->name('store');
             Route::delete('/delete/{id}', 'delete')->name('delete');
             Route::get('/view/{id}', 'view')->name('view');
+            Route::post('/update-order-status', 'updateOrderStatus')->name('order.updateStatus');
         });
     
     });

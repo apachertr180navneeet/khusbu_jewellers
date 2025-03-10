@@ -29,7 +29,8 @@ class Order extends Model
          'amount',
          'feedback',
          'comment',
-         'status'
+         'status',
+         'order_status'
     ];
 
     public function customer()

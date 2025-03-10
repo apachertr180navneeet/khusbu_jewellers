@@ -27,6 +27,7 @@
                                     <th>WhatsApp Number</th>
                                     <th>Amount</th>
                                     <th>Delivery Type</th>
+                                    <th>Manager Approved</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -57,8 +58,20 @@
                                             @endif
                                         </td>
                                         <td>
+                                            @if($order->order_status == 'product_founder')
+                                                    <span class="badge bg-success">{{ $order->order_status }}</span>
+                                            @elseif($order->status == 'pending')
+                                                    <span class="badge bg-warning">{{ $order->order_status }}</span>
+                                            @else
+                                                    <span class="badge bg-danger">{{ $order->order_status }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
                                             <a href="{{ route('manager.order.view', $order->id)}}" class="btn btn-sm btn-info">View</a>
-                                            {{--  <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-order" data-id="{{ $order->id }}">Delete</a>  --}}
+                                            @if($order->status == 'pending')
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-danger reject-status" data-id="{{ $order->id }}">Reject</a>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-success approved-status" data-id="{{ $order->id }}">Approved</a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -74,32 +87,42 @@
 @endsection 
 @section('script')
 <script>
-    $(document).on('click', '.delete-order', function(e) {
-        e.preventDefault();
+    $(document).ready(function () {
+        // Handle Reject Status
+        $(".reject-status").click(function () {
+            let orderId = $(this).data("id");
+            updateOrderStatus(orderId, "reject" , "reject");
+        });
     
-        let orderId = $(this).data('id');
+        // Handle Approve Status
+        $(".approved-status").click(function () {
+            let orderId = $(this).data("id");
+            updateOrderStatus(orderId, "approved" , "product_founder");
+        });
     
-        if (confirm("Are you sure you want to delete this order?")) {
+        function updateOrderStatus(orderId, status, order_status) {
             $.ajax({
-                url: "{{ url('/manager/order/delete') }}/" + orderId, // Correct URL format
-                type: "DELETE",
+                url: "{{ url('/manager/order/update-order-status') }}",
+                type: "POST",
                 data: {
-                    _token: "{{ csrf_token() }}"
+                    _token: $('meta[name="csrf-token"]').attr("content"), // CSRF token for security
+                    order_id: orderId,
+                    status: status,
+                    order_status: order_status
                 },
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
-                        alert("Order deleted successfully!");
-                        location.reload();
+                        alert("Order status updated to " + status);
+                        location.reload(); // Reload page to reflect changes
                     } else {
-                        alert("Error deleting order.");
+                        alert("Failed to update order status!");
                     }
                 },
-                error: function(xhr) {
+                error: function () {
                     alert("Something went wrong!");
-                    console.log(xhr.responseText);
                 }
             });
         }
-    });     
+    });    
 </script>
 @endsection

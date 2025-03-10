@@ -297,4 +297,19 @@ class ManagerOrderController extends Controller
         }
     }
 
+    public function updateOrderStatus(Request $request)
+    {
+        $order = Order::find($request->order_id);
+
+        if ($order) {
+            $order->status = $request->status;
+            $order->order_status = $request->order_status;
+            $order->save();
+
+            return response()->json(['success' => true, 'message' => 'Order status updated successfully!']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Order not found!']);
+    }
+
 }
