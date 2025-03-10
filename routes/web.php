@@ -13,6 +13,12 @@ use App\Http\Controllers\Executive\{
     OrderController
 };
 
+
+use App\Http\Controllers\Manager\{
+    ManagerAuthController,
+    ManagerOrderController
+};
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -110,6 +116,43 @@ Route::prefix('executive')->name('executive.')->group(function () {
         }
 
         Route::prefix('order')->name('order.')->controller(OrderController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/add', 'add')->name('add');
+            Route::post('/store', 'store')->name('store');
+            Route::delete('/delete/{id}', 'delete')->name('delete');
+            Route::get('/view/{id}', 'view')->name('view');
+        });
+    
+    });
+});
+
+
+// Sale Manager Action
+Route::prefix('manager')->name('manager.')->group(function () {
+    
+    // Guest Routes
+    Route::controller(ManagerAuthController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('login', 'login')->name('login');
+        Route::post('login', 'postLogin')->name('login.post');
+        Route::get('forget-password', 'showForgetPasswordForm')->name('forget.password.get');
+        Route::post('forget-password', 'submitForgetPasswordForm')->name('forget.password.post');
+        Route::get('reset-password/{token}', 'showResetPasswordForm')->name('reset.password.get');
+        Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
+    });
+
+    // Authenticated Manager Routes
+    Route::middleware('manager')->controller(ManagerAuthController::class)->group(function () {
+        Route::get('dashboard', 'adminDashboard')->name('dashboard');
+        Route::get('change-password', 'changePassword')->name('change.password');
+        Route::post('update-password', 'updatePassword')->name('update.password');
+        Route::get('logout', 'logout')->name('logout');
+        Route::get('profile', 'adminProfile')->name('profile');
+        Route::post('profile', 'updateAdminProfile')->name('update.profile');
+    });
+
+    Route::middleware('manager')->group(function () {
+        Route::prefix('order')->name('order.')->controller(ManagerOrderController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/add', 'add')->name('add');
             Route::post('/store', 'store')->name('store');

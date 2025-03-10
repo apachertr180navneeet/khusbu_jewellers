@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Executive;
+namespace App\Http\Controllers\manager;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Mail, DB, Hash, Validator, Session, File,Exception;
 
-class ExecutiveAuthController extends Controller
+class ManagerAuthController extends Controller
 {
     
     public function index()
@@ -21,13 +21,13 @@ class ExecutiveAuthController extends Controller
         try{
             if(Auth::user()) {
                 $user = Auth::user();
-                if($user->role == "executive") {
-                    return redirect()->route('executive.dashboard');
+                if($user->role == "manager") {
+                    return redirect()->route('manager.dashboard');
                 }else{
                     return back()->with("error","Opps! You do not have access this");
                 }
             }else{
-                return redirect()->route('executive.login');
+                return redirect()->route('manager.login');
             }
 
         }
@@ -40,12 +40,12 @@ class ExecutiveAuthController extends Controller
 
     public function login()
     {
-        return view("executive.auth.login");
+        return view("manager.auth.login");
     }
 
     public function registration()
     {
-        return view("executive.auth.registration");
+        return view("manager.auth.registration");
     }
 
     public function postLogin(Request $request)
@@ -55,18 +55,18 @@ class ExecutiveAuthController extends Controller
                 "email" => "required",
                 "password" => "required",
             ]);
-            $user = User::where('role','executive')->where('email',$request->email)->first();
+            $user = User::where('role','manager')->where('email',$request->email)->first();
             if($user){
                 $credentials = $request->only("email", "password");
                 if(Auth::attempt([
                         'email' => $request->email,
                         'password' => $request->password,
                         'role' => function ($query) {
-                            $query->where('role','executive');
+                            $query->where('role','manager');
                         }
                     ]))
                 {
-                    return redirect()->route("executive.dashboard")->with("success", "Welcome to your dashboard.");
+                    return redirect()->route("manager.dashboard")->with("success", "Welcome to your dashboard.");
                 }
                 return back()->with("error","Invalid credentials");
             }else{
@@ -90,7 +90,7 @@ class ExecutiveAuthController extends Controller
         $data = $request->all();
         $check = $this->create($data);
 
-        return redirect("executive.dashboard")->with("success","Great! You have Successfully loggedin");
+        return redirect("manager.dashboard")->with("success","Great! You have Successfully loggedin");
     }
 
     public function create(array $data)
@@ -104,7 +104,7 @@ class ExecutiveAuthController extends Controller
 
     public function showForgetPasswordForm()
     {
-        return view("executive.auth.forgot-password");
+        return view("manager.auth.forgot-password");
     }
 
     public function submitForgetPasswordForm(Request $request)
@@ -123,13 +123,13 @@ class ExecutiveAuthController extends Controller
             ]);
 
             $new_link_token = url("admin/reset-password/" . $token);
-            Mail::send("executive.email.forgot-password",["token" => $new_link_token, "email" => $request->email],
+            Mail::send("manager.email.forgot-password",["token" => $new_link_token, "email" => $request->email],
                 function ($message) use ($request) {
                     $message->to($request->email);
                     $message->subject("Reset Password");
                 }
             );
-            return redirect()->route("executive.login")->with("success","We have e-mailed your password reset link!");
+            return redirect()->route("manager.login")->with("success","We have e-mailed your password reset link!");
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -142,7 +142,7 @@ class ExecutiveAuthController extends Controller
         try{    
             $user = DB::table("password_resets")->where("token", $token)->first();
             $email = $user->email;
-            return view("executive.auth.reset-password", ["token" => $token,"email" => $email,]);
+            return view("manager.auth.reset-password", ["token" => $token,"email" => $email,]);
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -168,7 +168,7 @@ class ExecutiveAuthController extends Controller
 
             DB::table("password_resets")->where(["email" => $request->email])->delete();
 
-            return redirect()->route("executive.login")->with("success","Your password has been changed successfully!");
+            return redirect()->route("manager.login")->with("success","Your password has been changed successfully!");
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -177,7 +177,7 @@ class ExecutiveAuthController extends Controller
 
     public function changePassword()
     {
-        return view("executive.auth.change-password");
+        return view("manager.auth.change-password");
     }
 
     public function updatePassword(Request $request)
@@ -209,7 +209,7 @@ class ExecutiveAuthController extends Controller
         try{
             Session::flush();
             Auth::logout();
-            return redirect()->route("executive.login")->withSuccess('Logout Successful!');
+            return redirect()->route("manager.login")->withSuccess('Logout Successful!');
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -220,7 +220,7 @@ class ExecutiveAuthController extends Controller
     {
         try{
             $user = Auth::user();
-            return view("executive.auth.profile", compact("user"));
+            return view("manager.auth.profile", compact("user"));
 
         }
         catch(Exception $e){
@@ -275,37 +275,55 @@ class ExecutiveAuthController extends Controller
         $user = Auth::user();
         $dashboardCount = [
             // Total orders for today
-            "today_order" => Order::where('exicutive_id',$user->id)->whereDate("created_at", now()->toDateString())->count(),
+            "today_order" => Order::where('sale_manager_id',$user->id)->whereDate("created_at", now()->toDateString())->count(),
         
             // Total orders for the current month
-            "month_order" => Order::where('exicutive_id',$user->id)->whereMonth("created_at", now()->month)
+            "month_order" => Order::where('sale_manager_id',$user->id)->whereMonth("created_at", now()->month)
                 ->whereYear("created_at", now()->year)
                 ->count(),
+
+            // Total orders for today
+            "open_order" => Order::where('sale_manager_id',$user->id)->where("status","!=",'completed')->count(),
+
+            // Total orders for the current month
+            "close_order" => Order::where('sale_manager_id',$user->id)->where("status", 'completed')->count(),
+
+            // Total orders for today
+            "normal_order" => Order::where('sale_manager_id',$user->id)->where("order_type",'normal')->count(),
+
+            // Total orders for the current month
+            "manufacturing_order" => Order::where('sale_manager_id',$user->id)->where("order_type", 'manufacturing')->count(),
         
             // Today's Prepaid Orders
-            "today_prepaid_order" => Order::where('exicutive_id',$user->id)->whereDate("created_at", now()->toDateString())
+            "today_prepaid_order" => Order::where('sale_manager_id',$user->id)->whereDate("created_at", now()->toDateString())
                 ->where("order_payment_type", "prepaid")
                 ->count(),
         
             // Today's COD Orders
-            "today_cod_order" => Order::where('exicutive_id',$user->id)->whereDate("created_at", now()->toDateString())
+            "today_cod_order" => Order::where('sale_manager_id',$user->id)->whereDate("created_at", now()->toDateString())
                 ->where("order_payment_type", "cod")
                 ->count(),
         
             // This Month's Prepaid Orders
-            "month_prepaid_order" => Order::where('exicutive_id',$user->id)->whereMonth("created_at", now()->month)
+            "month_prepaid_order" => Order::where('sale_manager_id',$user->id)->whereMonth("created_at", now()->month)
                 ->whereYear("created_at", now()->year)
                 ->where("order_payment_type", "prepaid")
                 ->count(),
         
             // This Month's COD Orders
-            "month_cod_order" => Order::where('exicutive_id',$user->id)->whereMonth("created_at", now()->month)
+            "month_cod_order" => Order::where('sale_manager_id',$user->id)->whereMonth("created_at", now()->month)
                 ->whereYear("created_at", now()->year)
                 ->where("order_payment_type", "cod")
                 ->count(),
+
+            // Total User Active
+            "today_user_active" => User::where('sale_executive',$user->id)->where("status", 'active')->count(),
+
+            // Total User In Active
+            "today_user_inactive" => User::where('sale_executive',$user->id)->where("status", 'inactive')->count(),
         ];
                 
-        return view("executive.dashboard.index",compact('dashboardCount'));
+        return view("manager.dashboard.index",compact('dashboardCount'));
     }
 
 
