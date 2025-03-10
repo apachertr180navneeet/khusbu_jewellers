@@ -113,6 +113,8 @@ Route::prefix('executive')->name('executive.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/add', 'add')->name('add');
             Route::post('/store', 'store')->name('store');
+            Route::delete('/delete/{id}', 'delete')->name('delete');
+            Route::get('/view/{id}', 'view')->name('view');
         });
     
     });

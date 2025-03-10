@@ -40,11 +40,25 @@
                                         <td>{{ $order->customer->phone }}</td>
                                         <td>{{ $order->customer->whatsapp_number }}</td>
                                         <td>{{ $order->amount }}</td>
-                                        <td>{{ $order->delivery_type }}</td>
-                                        <td>{{ $order->status }}</td>
                                         <td>
-                                            {{--  <a href="{{ route('executive.order.edit', $order->id)}}" class="btn btn-sm btn-primary">Edit</a>
-                                            <a href="{{ route('executive.order.delete', $order->id)}}" class="btn btn-sm btn-danger">Delete</a>  --}}
+                                            @if ($order->delivery_type == 'premium')
+                                                    <span class="badge bg-success">{{ $order->delivery_type }}</span>
+                                            @else
+                                                    <span class="badge bg-danger">{{ $order->delivery_type }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($order->status == 'approved')
+                                                    <span class="badge bg-success">{{ $order->status }}</span>
+                                            @elseif($order->status == 'pending')
+                                                    <span class="badge bg-warning">{{ $order->status }}</span>
+                                            @else
+                                                    <span class="badge bg-danger">{{ $order->status }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('executive.order.view', $order->id)}}" class="btn btn-sm btn-info">VIew</a>
+                                            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-order" data-id="{{ $order->id }}">Delete</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -60,6 +74,32 @@
 @endsection 
 @section('script')
 <script>
+    $(document).on('click', '.delete-order', function(e) {
+        e.preventDefault();
     
+        let orderId = $(this).data('id');
+    
+        if (confirm("Are you sure you want to delete this order?")) {
+            $.ajax({
+                url: "{{ url('/executive/order/delete') }}/" + orderId, // Correct URL format
+                type: "DELETE",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert("Order deleted successfully!");
+                        location.reload();
+                    } else {
+                        alert("Error deleting order.");
+                    }
+                },
+                error: function(xhr) {
+                    alert("Something went wrong!");
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+    });     
 </script>
 @endsection

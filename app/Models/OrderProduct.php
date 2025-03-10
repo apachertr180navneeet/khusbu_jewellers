@@ -22,6 +22,7 @@ class OrderProduct extends Model
          'product_image',
          'product_name',
          'product_price',
+         'product_qty',
          'comment'
     ];
 }

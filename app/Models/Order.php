@@ -37,4 +37,14 @@ class Order extends Model
         return $this->belongsTo(User::class, 'customer_id', 'id');
     }
 
+    public function orderProducts()
+    {
+        return $this->hasMany(OrderProduct::class);
+    }
+
+    public function paymentDetail()
+    {
+        return $this->hasOne(PaymentDetail::class);
+    }
+
 }

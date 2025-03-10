@@ -34,17 +34,16 @@ class OrderController extends Controller
         // Pass the company and comId to the view
         return view('executive.order.index', compact('OrderList'));
     }
-
-
     public function add()
     {
         $users = User::where('role', 'executive')->get();
+
+        $productfounder = User::where('role', 'product founder')->get();
         //dd($user);
 
         // Pass the company and comId to the view
-        return view('executive.order.add', compact('users'));
+        return view('executive.order.add', compact('users','productfounder'));
     }
-
     public function store(Request $request)
     {
         $user = Auth::user();
@@ -223,11 +222,15 @@ class OrderController extends Controller
                     'product_image' => $productImagePath,
                     'product_name' => $productName,
                     'product_price' => $request->price[$index],
-                    'quantity' => $request->quantity[$index],
+                    'product_qty' => $request->quantity[$index],
                     'comment' => $request->comment[$index] ?? null
                 ]);
             }
-
+            if($request->order_payment_type == "cod"){
+                $cod = $request->cod_amount;
+            }else{
+                $cod = "0.00";
+            }
             PaymentDetail::create([
                 'order_id' => $customerOrder->id,
                 'date' => $request->payment_date,
@@ -236,7 +239,7 @@ class OrderController extends Controller
                 'utr_id' => $request->utr_id,
                 'total_amount' => $request->total_amount,
                 'adv_amount' => $request->adv_amount,
-                'cod_amount' => $request->cod_amount,
+                'cod_amount' => $cod,
                 'payment_screen_shot' => $paymentScreenshotPath,
             ]);
 
@@ -246,4 +249,52 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'Something went wrong! Please try again.');
         }
     }
+    public function delete($id)
+    {
+        try {
+            $order = Order::find($id);
+
+            if (!$order) {
+                return response()->json(['success' => false, 'message' => 'Order not found'], 404);
+            }
+
+            // Delete related order products
+            $order->orderProducts()->forceDelete();
+
+            // Delete related payment details
+            $order->paymentDetail()->forceDelete();
+
+            // Force delete the order
+            $order->forceDelete();
+
+            return response()->json(['success' => true, 'message' => 'Order deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete order',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function view($id)
+    {
+        try {
+            $order = Order::with(['orderProducts', 'paymentDetail','customer'])->find($id);
+
+            $users = User::where('role', 'executive')->get();
+
+            $productfounder = User::where('role', 'product founder')->get();
+            //dd($user);
+
+            // Pass the company and comId to the view
+            return view('executive.order.view', compact('users','productfounder','order'));
+
+
+            
+        } catch (\Exception $e) {
+            dd($e);
+        }
+    }
+
 }
