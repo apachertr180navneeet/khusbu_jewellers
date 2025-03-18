@@ -50,6 +50,10 @@ class ExicutiveController extends Controller
                 ->whereYear("created_at", now()->year)
                 ->where("order_payment_type", "cod")
                 ->count(),
+            "today_prepaid_sale" => 0,
+            "today_cod_sale" => 0,
+            "month_prepaid_sale" => 0,
+            "month_cod_sale" => 0,
             "target_order" => 0,
             "target_sales" => 0,
             "archived_order" => 0,
@@ -70,8 +74,10 @@ class ExicutiveController extends Controller
             "silver_amount_prepaid" => 0,
             "manufacturing_order" => 0,
             "manufacturing_amount" => 0,
-            "cancel_order" => 0,
-            "cancel_amount" => 0,
+            "cancel_order_cod" => 0,
+            "cancel_order_prepaid" => 0,
+            "cancel_amount_cod" => 0,
+            "cancel_amount_prepaid" => 0,
             "incentive_order" => 0,
             "incentive_amount" => 0,
         ];
