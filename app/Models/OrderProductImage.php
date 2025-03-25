@@ -8,23 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
-class OrderProduct extends Model
+class OrderProductImage extends Model
 {
     use HasFactory , SoftDeletes;
 
 
      // Table name (optional, if different from plural model name)
-     protected $table = 'order_products';
+     protected $table = 'order_product_image';
 
      // Mass assignable fields
      protected $fillable = [
          'order_id',
-         'product_image',
-         'product_name',
-         'product_price',
-         'product_qty',
-         'product_type',
-         'product_weight',
-         'comment'
+         'order_product_id',
+         'product_image'
     ];
 }

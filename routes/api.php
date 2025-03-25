@@ -6,7 +6,8 @@ use App\Http\Controllers\Api\{
     UserController,
     ExicutiveController,
     ContactController,
-    AuthController
+    AuthController,
+    OrderController
 
 };
 
@@ -50,5 +51,9 @@ Route::middleware('jwt.verify')->group(function() {
     Route::get('/dashboard', [ExicutiveController::class, 'dashboard']);
     Route::get('/order/list', [ExicutiveController::class, 'orderList']);
     Route::post('/order/detail', [ExicutiveController::class, 'orderdetail']);
+
+    // Create Order Api
+    Route::post('/create/order/type', [OrderController::class, 'orderType']);
+    Route::post('/create/order/product/detail', [OrderController::class, 'productDetail']);
     
 });
