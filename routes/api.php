@@ -55,5 +55,9 @@ Route::middleware('jwt.verify')->group(function() {
     // Create Order Api
     Route::post('/create/order/type', [OrderController::class, 'orderType']);
     Route::post('/create/order/product/detail', [OrderController::class, 'productDetail']);
+    Route::post('/get/costomer', [OrderController::class, 'getCustomer']);
+    Route::get('/get/product-founder', [OrderController::class, 'getProductFounder']);
+    Route::post('/costomer/detail', [OrderController::class, 'customerDetail']);
+    Route::post('/payment/detail', [OrderController::class, 'paymentDetail']);
     
 });
