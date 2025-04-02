@@ -27,4 +27,9 @@ class OrderProduct extends Model
          'product_weight',
          'comment'
     ];
+
+    public function orderProductImages()
+    {
+        return $this->hasMany(OrderProductImage::class, 'order_product_id', 'id');
+    }
 }

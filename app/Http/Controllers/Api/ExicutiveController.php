@@ -108,7 +108,11 @@ class ExicutiveController extends Controller
     public function orderdetail(Request $request)
     {
         $id = $request->order_id;
-        $order = Order::with(['orderProducts', 'paymentDetail', 'customer'])->find($id);
+        $order = Order::with([
+            'orderProducts.orderProductImages', // Include product images
+            'paymentDetail.orderPaymentImages', // Include payment images
+            'customer'
+        ])->find($id);
 
         if (!$order) {
             return response()->json([
@@ -117,20 +121,24 @@ class ExicutiveController extends Controller
             ], 404);
         }
 
-        // Append base URL for images
-        $baseUrl = asset('storage/'); // Ensure storage link is created
+        // Base URL for images
+        $baseUrl = asset('storage/'); 
 
-        // Update orderProducts image URLs
-        $order->orderProducts->each(function ($product) use ($baseUrl) {
-            if (!empty($product->product_image)) {
-                $product->product_image = $baseUrl . '/' . ltrim($product->product_image, '/');
-            }
-        });
+        // // Update orderProducts with images in an array
+        // $order->orderProducts->each(function ($product) use ($baseUrl) {
+        //     $product->product_images = $product->orderProductImages->map(function ($image) use ($baseUrl) {
+        //         return $baseUrl . '/' . ltrim($image->image_path, '/');
+        //     });
+        //     unset($product->orderProductImages); // Remove unnecessary relation from response
+        // });
 
-        // Update paymentDetail image URL
-        if (!empty($order->paymentDetail) && !empty($order->paymentDetail->payment_screen_shot)) {
-            $order->paymentDetail->payment_screen_shot = $baseUrl . '/' . ltrim($order->paymentDetail->payment_screen_shot, '/');
-        }
+        // // Ensure paymentDetail is an object before processing images
+        // if ($order->paymentDetail) {
+        //     $order->paymentDetail->payment_images = $order->paymentDetail->orderPaymentImages->map(function ($image) use ($baseUrl) {
+        //         return $baseUrl . '/' . ltrim($image->image_path, '/');
+        //     });
+        //     unset($order->paymentDetail->orderPaymentImages); // Remove unnecessary relation from response
+        // }
 
         return response()->json([
             'status' => true,

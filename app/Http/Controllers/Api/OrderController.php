@@ -64,21 +64,18 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
-
     public function productDetail(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'order_id' => 'required|exists:orders,id',
-            'products' => 'required|array',
-            'products.*.product_name' => 'required|string',
-            'products.*.product_price' => 'required|numeric',
-            'products.*.product_qty' => 'required|integer|min:1',
-            'products.*.product_type' => 'required|string|in:simple,premium',
-            'products.*.comment' => 'nullable|string',
-            'products.*.product_weight' => 'required|numeric',
-            'products.*.product_image' => 'required|array',
-            'products.*.product_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'products.items' => 'required|array',
+            'products.items.*.product_name' => 'required|string',
+            'products.items.*.product_price' => 'required|numeric',
+            'products.items.*.product_qty' => 'required|integer|min:1',
+            'products.items.*.product_type' => 'required|string|in:simple,premium',
+            'products.items.*.comment' => 'nullable|string',
+            'products.items.*.product_weight' => 'required|numeric',
+            'products.items.*.product_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -90,8 +87,7 @@ class OrderController extends Controller
 
         try {
             $orderId = $request->input('order_id');
-            $products = $request->input('products');
-
+            $products = $request->input('products.items');
             $totalAmount = 0;
 
             foreach ($products as $index => $product) {
@@ -108,25 +104,24 @@ class OrderController extends Controller
                 $orderProductId = $orderProduct->id;
                 $totalAmount += $product['product_price'] * $product['product_qty']; // Calculate total amount
 
-                // Store each product image in `/public/uploads/product_image/`
-                if ($request->hasFile("products.{$index}.product_image")) {
-                    foreach ($request->file("products.{$index}.product_image") as $image) {
-                        $imageName = time() . '_' . $image->getClientOriginalName(); // Unique filename
-                        $imagePath = 'uploads/product_image/' . $imageName; // Path for saving in DB
-                        
-                        $image->move(public_path('uploads/product_image'), $imageName); // Move to `public/uploads/product_image/`
+                // Handle Single Image Upload
+                if ($request->hasFile("products.items.{$index}.product_image")) {
+                    $image = $request->file("products.items.{$index}.product_image");
+                    $imageName = time() . '_' . $image->getClientOriginalName(); // Unique filename
+                    $imagePath = 'uploads/product_image/' . $imageName; // Path for saving in DB
 
-                        // Save image path in the database
-                        OrderProductImage::create([
-                            'order_id' => $orderId,
-                            'order_product_id' => $orderProductId,
-                            'product_image' => $imagePath, // Store each image separately
-                        ]);
-                    }
+                    $image->move(public_path('uploads/product_image'), $imageName); // Move to public directory
+
+                    // Save image path in database
+                    OrderProductImage::create([
+                        'order_id' => $orderId,
+                        'order_product_id' => $orderProductId,
+                        'product_image' => $imagePath, // Store single image
+                    ]);
                 }
             }
 
-            // Get the current order amount and update it
+            // Update order amount
             Order::where('id', $orderId)->update(['amount' => \DB::raw("amount + $totalAmount")]);
 
             return response()->json([
@@ -141,7 +136,6 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
     public function getCustomer(Request $request)
     {
         // Validate request
@@ -181,7 +175,6 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
     public function getProductFounder(Request $request){
         try {        
             $productfounder = User::where('role', 'product founder')->get();
@@ -205,7 +198,6 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
     public function customerDetail(Request $request){
         // Validate request
         $validator = Validator::make($request->all(), [
@@ -271,8 +263,6 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
-
     public function paymentDetail(Request $request){
         // Validate request
         $validator = Validator::make($request->all(), [
@@ -281,25 +271,24 @@ class OrderController extends Controller
             'payments.*.payment_date' => 'required|string',
             'payments.*.payment_via' => 'required|string',
             'payments.*.utr_id' => 'required|string',
-            'payments.*.total_amount' => 'required|string',
-            'payments.*.adv_amount' => 'required|string',
-            'payments.*.cod_amount' => 'required|string',
-            'payments.*.payment_image' => 'required|array',
-            'payments.*.payment_image.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'payments.*.total_amount' => 'required|numeric',
+            'payments.*.adv_amount' => 'required|numeric',
+            'payments.*.cod_amount' => 'required|numeric',
+            'payments.*.payment_image' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048' // Fixed this rule
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors(),
             ], 422);
         }
-
+    
         try {   
             $orderId = $request->input('order_id');     
             $products = $request->input('payments');
             foreach ($products as $index => $product) {
-                // Create Order Product
+                // Create Order Payment
                 $orderPayment = PaymentDetail::create([
                     'order_id' => $orderId,
                     'date' => $product['payment_date'],
@@ -310,24 +299,23 @@ class OrderController extends Controller
                     'adv_amount' => $product['adv_amount'],
                     'cod_amount' => $product['cod_amount'],
                 ]);
-
+    
                 $orderPaymentId = $orderPayment->id;
-
-                // Store each product image in `/public/uploads/product_image/`
-                if ($request->hasFile("payments.{$index}.product_image")) {
-                    foreach ($request->file("payments.{$index}.product_image") as $image) {
-                        $imageName = time() . '_' . $image->getClientOriginalName(); // Unique filename
-                        $imagePath = 'uploads/product_image/' . $imageName; // Path for saving in DB
-                        
-                        $image->move(public_path('uploads/product_image'), $imageName); // Move to `public/uploads/product_image/`
-
-                        // Save image path in the database
-                        OrderProductImage::create([
-                            'order_id' => $orderId,
-                            'order_payment_id' => $orderPaymentId,
-                            'payment_image' => $imagePath, // Store each image separately
-                        ]);
-                    }
+    
+                // Store single payment image
+                if ($request->hasFile("payments.{$index}.payment_image")) {
+                    $image = $request->file("payments.{$index}.payment_image");
+                    $imageName = time() . '_' . $image->getClientOriginalName();
+                    $imagePath = 'uploads/product_image/' . $imageName;
+    
+                    $image->move(public_path('uploads/product_image'), $imageName);
+    
+                    // Save image path in the database
+                    OrderProductImage::create([
+                        'order_id' => $orderId,
+                        'order_payment_id' => $orderPaymentId,
+                        'payment_image' => $imagePath,
+                    ]);
                 }
             }
             return response()->json([
@@ -335,7 +323,7 @@ class OrderController extends Controller
                 'message' => 'Order updated with Payment Details.',
                 'order_id' => $request->order_id,
             ], 200);
-
+    
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
@@ -343,6 +331,4 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
-
 }

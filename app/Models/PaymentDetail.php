@@ -28,4 +28,9 @@ class PaymentDetail extends Model
             'adv_amount',
             'cod_amount'
     ];
+
+    public function orderPaymentImages()
+    {
+        return $this->hasMany(OrderPaymentImage::class, 'order_payment_id', 'id');
+    }
 }
