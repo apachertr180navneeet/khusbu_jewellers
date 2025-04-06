@@ -25,6 +25,7 @@ class OrderProduct extends Model
          'product_qty',
          'product_type',
          'product_weight',
+         'product_date',
          'comment'
     ];
 

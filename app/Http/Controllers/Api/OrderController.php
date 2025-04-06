@@ -70,6 +70,7 @@ class OrderController extends Controller
             'order_id' => 'required|exists:orders,id',
             'products.items' => 'required|array',
             'products.items.*.product_name' => 'required|string',
+            'products.items.*.product_date' => 'required',
             'products.items.*.product_price' => 'required|numeric',
             'products.items.*.product_qty' => 'required|integer|min:1',
             'products.items.*.product_type' => 'required|string|in:simple,premium',
@@ -95,8 +96,10 @@ class OrderController extends Controller
                 $orderProduct = OrderProduct::create([
                     'order_id' => $orderId,
                     'product_name' => $product['product_name'],
+                    'product_date' => $product['product_date'],
                     'product_price' => $product['product_price'],
                     'product_qty' => $product['product_qty'],
+                    'product_weight' => $product['product_weight'],
                     'product_weight' => $product['product_weight'],
                     'comment' => $product['comment'] ?? null,
                 ]);
@@ -269,6 +272,7 @@ class OrderController extends Controller
             'order_id' => 'required|exists:orders,id',
             'payments' => 'required|array',
             'payments.*.payment_date' => 'required|string',
+            'payments.*.payment_time' => 'required',
             'payments.*.payment_via' => 'required|string',
             'payments.*.utr_id' => 'required|string',
             'payments.*.total_amount' => 'required|numeric',
@@ -292,6 +296,7 @@ class OrderController extends Controller
                 $orderPayment = PaymentDetail::create([
                     'order_id' => $orderId,
                     'date' => $product['payment_date'],
+                    'payment_time' => $product['payment_time'],
                     'paid_amount' => $product['total_amount'],
                     'payment_via' => $product['payment_via'],
                     'utr_id' => $product['utr_id'],
