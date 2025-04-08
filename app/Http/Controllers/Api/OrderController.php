@@ -202,19 +202,20 @@ class OrderController extends Controller
         }
     }
     public function customerDetail(Request $request){
+        
         // Validate request
         $validator = Validator::make($request->all(), [
             'order_id' => 'required|exists:orders,id', // Ensure order_id exists in orders table
             'name' => 'required|string|max:255',
-            'phone' => 'required|numeric|digits:10', // Ensure phone is unique in users table
-            'whatsapp_number' => 'required|numeric|digits:10', // Ensure WhatsApp number is unique
+            'phone' => 'required|numeric|digits:10|unique:users,phone', // Ensure phone is unique in users table
+            'whatsapp_number' => 'required|numeric|digits:10|unique:users,whatsapp_number', // Ensure WhatsApp number is unique
             'address' => 'required|string|max:500',
             'pincode' => 'required|digits:6',
             'city' => 'required|string|max:255',
             'state' => 'required|string|max:255',
             'feedback' => 'nullable|string|max:1000',
             'product_founder' => 'required|string|max:255',
-        ]);
+        ]);        
 
         if ($validator->fails()) {
             return response()->json([
@@ -233,7 +234,7 @@ class OrderController extends Controller
                 $userId = $user->id;
             }else{
                 $customerUser = User::create([
-                    'full_name' => $request->customer_name, // Default name, you can modify this
+                    'full_name' => $request->name, // Default name, you can modify this
                     'phone' => $request->phone,
                     'whatsapp_number' => $request->whatsapp_number,
                     'role' => 'customer',
@@ -276,8 +277,8 @@ class OrderController extends Controller
             'payments.*.payment_via' => 'required|string',
             'payments.*.utr_id' => 'required|string',
             'payments.*.total_amount' => 'required|numeric',
-            'payments.*.adv_amount' => 'required|numeric',
-            'payments.*.cod_amount' => 'required|numeric',
+            'payments.*.adv_amount' => 'nullable|numeric',
+            'payments.*.cod_amount' => 'nullable|numeric',
             'payments.*.payment_image' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048' // Fixed this rule
         ]);
     
@@ -301,8 +302,9 @@ class OrderController extends Controller
                     'payment_via' => $product['payment_via'],
                     'utr_id' => $product['utr_id'],
                     'total_amount' => $product['total_amount'],
-                    'adv_amount' => $product['adv_amount'],
-                    'cod_amount' => $product['cod_amount'],
+                    'adv_amount' => $product['adv_amount'] ?? 0,
+                    'cod_amount' => $product['cod_amount'] ?? 0,
+
                 ]);
     
                 $orderPaymentId = $orderPayment->id;
