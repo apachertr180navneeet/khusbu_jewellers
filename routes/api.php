@@ -11,31 +11,11 @@ use App\Http\Controllers\Api\{
 
 };
 
-
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 Route::get('/splash-screen', [AuthController::class, 'splashScreens']);
 Route::get('/timezones', [AuthController::class, 'getTimeZones']);
 Route::post('/contact', [ContactController::class, 'submitContact']);
 
 Route::group(['prefix'=>'auth'], function(){
-    // Route::post('/register', [AuthController::class, 'register']);
-    // Route::post('/verify-register', [AuthController::class, 'verifyRegister']);
-    // Route::post('/set-forgot-password', [AuthController::class, 'setForgotPassword']);
     Route::post('/login', [AuthController::class, 'login']);
 });
 
@@ -59,5 +39,7 @@ Route::middleware('jwt.verify')->group(function() {
     Route::get('/get/product-founder', [OrderController::class, 'getProductFounder']);
     Route::post('/costomer/detail', [OrderController::class, 'customerDetail']);
     Route::post('/payment/detail', [OrderController::class, 'paymentDetail']);
-    
+    Route::post('/product/delete', [OrderController::class, 'productDelete']);
+    Route::post('/product/add/image', [OrderController::class, 'productAddImage']);
+    Route::post('/product/delete/image', [OrderController::class, 'productDeleteImage']);  
 });
