@@ -207,8 +207,8 @@ class OrderController extends Controller
         $validator = Validator::make($request->all(), [
             'order_id' => 'required|exists:orders,id', // Ensure order_id exists in orders table
             'name' => 'required|string|max:255',
-            'phone' => 'required|numeric|digits:10|unique:users,phone', // Ensure phone is unique in users table
-            'whatsapp_number' => 'required|numeric|digits:10|unique:users,whatsapp_number', // Ensure WhatsApp number is unique
+            'phone' => 'required|numeric|digits:10', // Ensure phone is unique in users table
+            'whatsapp_number' => 'required|numeric|digits:10', // Ensure WhatsApp number is unique
             'address' => 'required|string|max:500',
             'pincode' => 'required|digits:6',
             'city' => 'required|string|max:255',
@@ -314,11 +314,10 @@ class OrderController extends Controller
                     $image = $request->file("payments.{$index}.payment_image");
                     $imageName = time() . '_' . $image->getClientOriginalName();
                     $imagePath = 'uploads/product_image/' . $imageName;
-    
                     $image->move(public_path('uploads/product_image'), $imageName);
     
                     // Save image path in the database
-                    OrderProductImage::create([
+                    OrderPaymentImage::create([
                         'order_id' => $orderId,
                         'order_payment_id' => $orderPaymentId,
                         'payment_image' => $imagePath,

@@ -43,7 +43,7 @@ class Order extends Model
         return $this->hasMany(OrderProduct::class);
     }
 
-    public function paymentDetail()
+    public function paymentDetails()
     {
         return $this->hasMany(PaymentDetail::class);
     }

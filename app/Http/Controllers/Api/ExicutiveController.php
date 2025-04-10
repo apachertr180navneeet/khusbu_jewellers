@@ -6,7 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{
         User,
-        Order
+        Order,
+        OrderProductImage,
+        OrderProduct,
+        PaymentDetail,
+        OrderPaymentImage
 };
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Validator;
@@ -19,6 +23,7 @@ use App\Models\AppUser;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\Filesystem;
 use App\Models\SplashScreen;
+
 
 
 
@@ -108,11 +113,8 @@ class ExicutiveController extends Controller
     public function orderdetail(Request $request)
     {
         $id = $request->order_id;
-        $order = Order::with([
-            'orderProducts.orderProductImages', // Include product images
-            'paymentDetail.orderPaymentImages', // Include payment images
-            'customer'
-        ])->find($id);
+
+        $order = Order::find($id);
 
         if (!$order) {
             return response()->json([
@@ -121,28 +123,89 @@ class ExicutiveController extends Controller
             ], 404);
         }
 
-        // Base URL for images
-        $baseUrl = asset('storage/'); 
+        $baseUrl = url('/');
+        
+        $orderProducts = OrderProduct::where('order_id', $id)->get();
+        $orderProductsArray = [];
 
-        // // Update orderProducts with images in an array
-        // $order->orderProducts->each(function ($product) use ($baseUrl) {
-        //     $product->product_images = $product->orderProductImages->map(function ($image) use ($baseUrl) {
-        //         return $baseUrl . '/' . ltrim($image->image_path, '/');
-        //     });
-        //     unset($product->orderProductImages); // Remove unnecessary relation from response
-        // });
+        foreach ($orderProducts as $product) {
+            // Fetch product images for this product
+            //$orderProductImages = OrderProductImage::where('order_product_id', $product->id)->get();
+            $orderProductImages = DB::table('order_product_image')
+            ->where('order_product_id', $product->id)
+            ->get();
 
-        // // Ensure paymentDetail is an object before processing images
-        // if ($order->paymentDetail) {
-        //     $order->paymentDetail->payment_images = $order->paymentDetail->orderPaymentImages->map(function ($image) use ($baseUrl) {
-        //         return $baseUrl . '/' . ltrim($image->image_path, '/');
-        //     });
-        //     unset($order->paymentDetail->orderPaymentImages); // Remove unnecessary relation from response
-        // }
+            // Prepare product_images array
+            $productImagesArray = [];
+            foreach ($orderProductImages as $image) {
+                $productImagesArray[] = [
+                    'product_image' => $image->product_image 
+                        ? $baseUrl . '/' . $image->product_image 
+                        : null,
+                ];
+            }
+
+            // Add product details with images
+            $orderProductsArray[] = [
+                'product_date'    => $product->product_date,
+                'product_name'    => $product->product_name,
+                'product_price'   => $product->product_price,
+                'product_qty'     => $product->product_qty,
+                'product_weight'  => $product->product_weight,
+                'product_type'    => $product->product_type,
+                'comment'         => $product->comment,
+                'product_images'  => $productImagesArray,
+            ];
+        }
+
+        $order['orderProducts'] = $orderProductsArray;
+
+
+        $orderPayments = PaymentDetail::where('order_id', $id)->get();
+        $orderPaymentsArray = [];
+
+        foreach ($orderPayments as $payment) {
+            // Fetch product images for this product
+            $orderPaymentsImages = DB::table('payment_image')
+            ->where('order_payment_id', $payment->id)
+            ->get();
+
+            // Prepare product_images array
+            $paymentImagesArray = [];
+            foreach ($orderPaymentsImages as $payimage) {
+                $paymentImagesArray[] = [
+                    'payment_image' => $payimage->payment_image 
+                        ? $baseUrl . '/' . $payimage->payment_image 
+                        : null,
+                ];
+            }
+
+            // Add product details with images
+            $orderPaymentsArray[] = [
+                'date'    => $payment->date,
+                'payment_time'    => $payment->payment_time,
+                'paid_amount'   => $payment->paid_amount,
+                'payment_via'     => $payment->payment_via,
+                'utr_id'  => $payment->utr_id,
+                'total_amount'    => $payment->total_amount,
+                'adv_amount'         => $payment->adv_amount,
+                'cod_amount'         => $payment->cod_amount,
+                'payment_images'  => $paymentImagesArray,
+            ];
+        }
+
+        $order['orderPayments'] = $orderPaymentsArray;
+
+        $customerDteail = User::where('id', $order->customer_id)->first();
+
+
+        $order['customerDetail'] = $customerDteail;
 
         return response()->json([
             'status' => true,
             'data' => $order,
         ], 200);
     }
+
+
 }

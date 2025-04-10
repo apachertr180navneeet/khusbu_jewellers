@@ -26,11 +26,18 @@ class PaymentDetail extends Model
             'utr_id',
             'total_amount',
             'adv_amount',
-            'cod_amount'
+            'cod_amount',
+            'payment_time'
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id');
+    }
 
     public function orderPaymentImages()
     {
         return $this->hasMany(OrderPaymentImage::class, 'order_payment_id', 'id');
     }
+
 }

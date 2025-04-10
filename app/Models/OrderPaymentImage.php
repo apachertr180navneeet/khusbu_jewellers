@@ -22,4 +22,10 @@ class OrderPaymentImage extends Model
          'order_payment_id',
          'payment_image'
     ];
+
+    public function paymentDetail()
+    {
+        return $this->belongsTo(PaymentDetail::class, 'order_payment_id', 'id');
+    }
+
 }
