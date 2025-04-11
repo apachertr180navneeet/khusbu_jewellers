@@ -142,11 +142,13 @@ class ExicutiveController extends Controller
                     'product_image' => $image->product_image 
                         ? $baseUrl . '/' . $image->product_image 
                         : null,
+                    'product_image_id' => $image->id,
                 ];
             }
 
             // Add product details with images
             $orderProductsArray[] = [
+                'product_id'    => $product->id,
                 'product_date'    => $product->product_date,
                 'product_name'    => $product->product_name,
                 'product_price'   => $product->product_price,
@@ -177,11 +179,13 @@ class ExicutiveController extends Controller
                     'payment_image' => $payimage->payment_image 
                         ? $baseUrl . '/' . $payimage->payment_image 
                         : null,
+                    'payment_image_id' => $payimage->id,
                 ];
             }
 
             // Add product details with images
             $orderPaymentsArray[] = [
+                'payment_id'    => $payment->id,
                 'date'    => $payment->date,
                 'payment_time'    => $payment->payment_time,
                 'paid_amount'   => $payment->paid_amount,
