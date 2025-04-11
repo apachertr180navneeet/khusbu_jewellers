@@ -41,5 +41,8 @@ Route::middleware('jwt.verify')->group(function() {
     Route::post('/payment/detail', [OrderController::class, 'paymentDetail']);
     Route::post('/product/delete', [OrderController::class, 'productDelete']);
     Route::post('/product/add/image', [OrderController::class, 'productAddImage']);
-    Route::post('/product/delete/image', [OrderController::class, 'productDeleteImage']);  
+    Route::post('/product/delete/image', [OrderController::class, 'productDeleteImage']);
+    Route::post('/payment/delete', [OrderController::class, 'paymentDelete']);
+    Route::post('/payment/add/image', [OrderController::class, 'paymentAddImage']);
+    Route::post('/payment/delete/image', [OrderController::class, 'paymentDeleteImage']);  
 });

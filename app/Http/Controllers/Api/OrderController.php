@@ -444,7 +444,6 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
     public function productDeleteImage(Request $request)
     {
         // Validate the incoming request
@@ -476,6 +475,153 @@ class OrderController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Product image delete successfully.',
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Server error: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+    public function paymentDelete(Request $request)
+    {
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'payment_id' => 'required|exists:payment_details,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $paymentId = $request->input('payment_id');
+
+            // Fetch the order product
+            $orderPayment = PaymentDetail::find($paymentId);
+
+            if ($orderPayment) {
+
+                // Delete related images from OrderProductImage
+                $paymentImages = OrderPaymentImage::where('order_payment_id', $paymentId)->get();
+                foreach ($paymentImages as $image) {
+                    $imagePath = public_path($image->payment_image);
+
+                    // Delete image from folder if exists
+                    if (file_exists($imagePath)) {
+                        unlink($imagePath);
+                    }
+
+                    // Delete image record
+                    $image->delete();
+                }
+
+                // Delete the main product
+                $orderPayment->delete();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Order Payment and associated images deleted successfully.',
+                ], 200);
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Order Product not found.',
+            ], 404);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong! ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+    public function paymentAddImage(Request $request)
+    {
+        // Validate the incoming request
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'required|exists:orders,id',
+            'payment_id' => 'required|exists:order_products,id',
+            'payment_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $orderId = $request->order_id;
+            $paymentId = $request->payment_id;
+
+            if ($request->hasFile('payment_image')) {
+                $image = $request->file('payment_image');
+
+                // Create a unique file name and define the path
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $imagePath = 'uploads/product_image/' . $imageName;
+
+                // Move the uploaded image to the public directory
+                $image->move(public_path('uploads/product_image'), $imageName);
+
+                // Save image record in the database
+                OrderPaymentImage::create([
+                    'order_id' => $orderId,
+                    'order_payment_id' => $paymentId,
+                    'payment_image' => $imagePath,
+                ]);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Payment image uploaded successfully.',
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Server error: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+    public function paymentDeleteImage(Request $request)
+    {
+        // Validate the incoming request
+        $validator = Validator::make($request->all(), [
+            'payment_image_id' => 'required|exists:order_product_image,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $paymentImageId = $request->payment_image_id;
+
+            // Delete related images from OrderProductImage
+            $orderImages = OrderPaymentImage::where('id', $paymentImageId)->first();
+            $imagePath = public_path($orderImages->payment_image);
+
+            // Delete image from folder if exists
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+
+            // Delete image record
+            $orderImages->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'Payment image delete successfully.',
             ], 201);
 
         } catch (\Exception $e) {
