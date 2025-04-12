@@ -463,6 +463,12 @@ class OrderController extends Controller
 
             // Delete related images from OrderProductImage
             $orderImages = OrderProductImage::where('id', $productImageId)->first();
+            if (!$orderImages) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Product image not found.',
+                ], 404);
+            }
             $imagePath = public_path($orderImages->product_image);
 
             // Delete image from folder if exists
@@ -478,6 +484,7 @@ class OrderController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
+            dd($e);
             return response()->json([
                 'status' => false,
                 'message' => 'Server error: ' . $e->getMessage(),
