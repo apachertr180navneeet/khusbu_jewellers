@@ -30,6 +30,7 @@ Route::middleware('jwt.verify')->group(function() {
     Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
     Route::get('/dashboard', [ExicutiveController::class, 'dashboard']);
     Route::get('/order/list', [ExicutiveController::class, 'orderList']);
+    Route::get('/order/search', [ExicutiveController::class, 'orderSearch']);
     Route::post('/order/detail', [ExicutiveController::class, 'orderdetail']);
 
     // Create Order Api

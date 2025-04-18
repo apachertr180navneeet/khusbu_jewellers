@@ -23,7 +23,7 @@ use App\Models\AppUser;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\Filesystem;
 use App\Models\SplashScreen;
-
+use Carbon\Carbon;
 
 
 
@@ -133,6 +133,7 @@ class ExicutiveController extends Controller
             //$orderProductImages = OrderProductImage::where('order_product_id', $product->id)->get();
             $orderProductImages = DB::table('order_product_image')
             ->where('order_product_id', $product->id)
+            ->whereNull('deleted_at')
             ->get();
 
             // Prepare product_images array
@@ -170,6 +171,7 @@ class ExicutiveController extends Controller
             // Fetch product images for this product
             $orderPaymentsImages = DB::table('payment_image')
             ->where('order_payment_id', $payment->id)
+            ->whereNull('deleted_at')
             ->get();
 
             // Prepare product_images array
@@ -210,6 +212,64 @@ class ExicutiveController extends Controller
             'data' => $order,
         ], 200);
     }
+
+    public function orderSearch(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $salesExicutiveId = $user->id;
+
+        // Read filters from the request
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $orderPaymentType = $request->input('order_payment_type'); // 'prepaid' or 'cod'
+        $orderType = $request->input('order_type'); // 'manufacturing'
+        $startAmount = $request->input('start_amount'); // min amount
+        $endAmount = $request->input('end_amount');     // max amount
+
+        // Build the query
+        $query = Order::where('exicutive_id', $salesExicutiveId)
+                    ->with('customer');
+
+        // Apply date range filter
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [
+                Carbon::parse($startDate)->startOfDay(),
+                Carbon::parse($endDate)->endOfDay()
+            ]);
+        }
+
+        // Apply payment type filter
+        if ($orderPaymentType) {
+            $query->where('order_payment_type', $orderPaymentType);
+        }
+
+        // Apply order type filter
+        if ($orderType) {
+            $query->where('order_type', $orderType);
+        }
+
+        // Apply amount range filter
+        if ($startAmount !== null && $endAmount !== null) {
+            $query->whereBetween('amount', [$startAmount, $endAmount]);
+        }
+
+        // Get paginated result
+        $OrderList = $query->paginate(10);
+
+        // If no results found
+        if ($OrderList->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No orders found for the given filters.',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $OrderList,
+        ], 200);
+    }
+
 
 
 }

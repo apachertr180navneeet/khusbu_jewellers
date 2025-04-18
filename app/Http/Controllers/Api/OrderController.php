@@ -76,7 +76,7 @@ class OrderController extends Controller
             'products.items.*.product_type' => 'required|string|in:simple,premium',
             'products.items.*.comment' => 'nullable|string',
             'products.items.*.product_weight' => 'required|numeric',
-            'products.items.*.product_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'products.items.*.product_image' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -125,7 +125,7 @@ class OrderController extends Controller
             }
 
             // Update order amount
-            Order::where('id', $orderId)->update(['amount' => \DB::raw("amount + $totalAmount")]);
+            Order::where('id', $orderId)->update(['amount' => \DB::raw("$totalAmount")]);
 
             return response()->json([
                 'status' => true,
@@ -279,7 +279,7 @@ class OrderController extends Controller
             'payments.*.total_amount' => 'required|numeric',
             'payments.*.adv_amount' => 'nullable|numeric',
             'payments.*.cod_amount' => 'nullable|numeric',
-            'payments.*.payment_image' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048' // Fixed this rule
+            'payments.*.payment_image' => 'required' // Fixed this rule
         ]);
     
         if ($validator->fails()) {
@@ -292,6 +292,7 @@ class OrderController extends Controller
         try {   
             $orderId = $request->input('order_id');     
             $products = $request->input('payments');
+            $totalAmount = 0;
             foreach ($products as $index => $product) {
                 // Create Order Payment
                 $orderPayment = PaymentDetail::create([
@@ -323,7 +324,9 @@ class OrderController extends Controller
                         'payment_image' => $imagePath,
                     ]);
                 }
+                $totalAmount += $product['total_amount'];
             }
+            Order::where('id', $orderId)->update(['amount' => \DB::raw("$totalAmount")]);
             return response()->json([
                 'status' => true,
                 'message' => 'Order updated with Payment Details.',
