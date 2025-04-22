@@ -228,10 +228,10 @@ class OrderController extends Controller
             $user = Auth::user();
             $salesExicutiveId = $user->id;
 
-            $user = User::where('phone', $request->phone)->first();
+            $userdetail = User::where('phone', $request->phone)->first();
 
             if ($user) {
-                $userId = $user->id;
+                $userId = $userdetail->id;
             }else{
                 $customerUser = User::create([
                     'full_name' => $request->name, // Default name, you can modify this
@@ -275,7 +275,7 @@ class OrderController extends Controller
             'payments.*.payment_date' => 'required|string',
             'payments.*.payment_time' => 'required',
             'payments.*.payment_via' => 'required|string',
-            'payments.*.utr_id' => 'required|string',
+            'payments.*.utr_id' => 'nullable|string',
             'payments.*.total_amount' => 'required|numeric',
             'payments.*.adv_amount' => 'nullable|numeric',
             'payments.*.cod_amount' => 'nullable|numeric',
